@@ -223,6 +223,16 @@ db.serialize(() => {
         nombre TEXT NOT NULL
     );`);
 
+    db.run(`CREATE TABLE IF NOT EXISTS direcciones (
+        id_direccion INTEGER PRIMARY KEY,
+        pais INTEGER NOT NULL,
+        estado INTEGER NOT NULL,
+        ciudad INTEGER NOT NULL,
+        FOREIGN KEY (pais) REFERENCES paises(id_pais),
+        FOREIGN KEY (estado) REFERENCES estados(id_estado),
+        FOREIGN KEY (ciudad) REFERENCES ciudades(id_ciudad)
+    );`);
+
     db.run(`CREATE TABLE IF NOT EXISTS familiares (
         id_familiar INTEGER PRIMARY KEY,
         id_usuario INTEGER NOT NULL,
