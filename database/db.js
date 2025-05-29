@@ -198,28 +198,28 @@ CREATE TABLE pagos (
 
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS ocupaciones (
-        id_ocupacion INTEGER PRIMARY KEY,
+        id_ocupacion INTEGER PRIMARY KEY AUTOINCREMENT,
         descripcion TEXT NOT NULL
     );`);
   
     db.run(`CREATE TABLE IF NOT EXISTS parentescos (
-        id_parentesco INTEGER PRIMARY KEY,
+        id_parentesco INTEGER PRIMARY KEY AUTOINCREMENT,
         descripcion TEXT NOT NULL,
         es_directo BOOLEAN NOT NULL
     );`);
 
     db.run(`CREATE TABLE IF NOT EXISTS paises (
-        id_pais INTEGER PRIMARY KEY,
+        id_pais INTEGER PRIMARY KEY AUTOINCREMENT,
         nombre TEXT NOT NULL
     );`);
 
     db.run(`CREATE TABLE IF NOT EXISTS estados (
-        id_estado INTEGER PRIMARY KEY,
+        id_estado INTEGER PRIMARY KEY AUTOINCREMENT,
         nombre TEXT NOT NULL
     );`);
 
     db.run(`CREATE TABLE IF NOT EXISTS ciudades (
-        id_ciudad INTEGER PRIMARY KEY,
+        id_ciudad INTEGER PRIMARY KEY AUTOINCREMENT,
         nombre TEXT NOT NULL
     );`);
 
@@ -262,7 +262,7 @@ db.serialize(() => {
     );`);
 
     db.run(`CREATE TABLE IF NOT EXISTS usuarios_ocupacion (
-        id_usuario_ocupacion INTEGER PRIMARY KEY,
+        id_usuario_ocupacion INTEGER PRIMARY AUTOINCREMENT,
         id_usuario INTEGER NOT NULL,
         id_ocupacion INTEGER NOT NULL,
         FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
@@ -270,7 +270,7 @@ db.serialize(() => {
     );`);
 
     db.run(`CREATE TABLE IF NOT EXISTS usuarios_direccion (
-        id_usuario_direccion INTEGER PRIMARY KEY,
+        id_usuario_direccion INTEGER PRIMARY KEY AUTOINCREMENT,
         id_usuario INTEGER NOT NULL,
         id_direccion INTEGER NOT NULL,
         FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
@@ -278,33 +278,33 @@ db.serialize(() => {
     );`);
 
     db.run(`CREATE TABLE IF NOT EXISTS planes (
-        id INTEGER PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         nombre TEXT NOT NULL,
         capacidad_total INTEGER NOT NULL,
         max_no_directos INTEGER NOT NULL,
         precio_mensual REAL NOT NULL
     );`);
 
-    db.run(`INSERT OR IGNORE INTO planes (id, nombre, capacidad_total, max_no_directos, precio_mensual) VALUES
-    (1, 'BASICO', 5, 1, 1500),
-    (2, 'PRO', 7, 3, 3000),
-    (3, 'PLUS', 9, 4, 4500),
-    (4, 'PREMIUM', 11, 5, 6000),
-    (5, 'GOLD', 17, 10, 7500);`);
+    db.run(`INSERT OR IGNORE INTO planes (nombre, capacidad_total, max_no_directos, precio_mensual) VALUES
+    ('BASICO', 5, 1, 1500),
+    ('PRO', 7, 3, 3000),
+    ('PLUS', 9, 4, 4500),
+    ('PREMIUM', 11, 5, 6000),
+    ('GOLD', 17, 10, 7500);`);
 
     db.run(`CREATE TABLE IF NOT EXISTS servicios (
-        id INTEGER PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         nombre TEXT NOT NULL,
         tipo TEXT CHECK (tipo IN ('incluido', 'adicional')) NOT NULL,
         precio_base REAL DEFAULT 0
     );`);
 
-    db.run(`INSERT OR IGNORE INTO servicios (id, nombre, tipo, precio_base) VALUES
-    (1, 'Consulta médica general', 'incluido', 0),
-    (2, 'Odontología básica', 'incluido', 0),
-    (3, 'Laboratorio clínico', 'adicional', 150.00),
-    (4, 'Psicología', 'adicional', 300.00),
-    (5, 'Oftalmología', 'adicional', 300.00);`);
+    db.run(`INSERT OR IGNORE INTO servicios (nombre, tipo, precio_base) VALUES
+    ('Consulta médica general', 'incluido', 0),
+    ('Odontología básica', 'incluido', 0),
+    ('Laboratorio clínico', 'adicional', 150.00),
+    ('Psicología', 'adicional', 300.00),
+    ('Oftalmología', 'adicional', 300.00);`);
 
     db.run(`CREATE TABLE IF NOT EXISTS planes_servicios (
         plan_id INTEGER NOT NULL,
@@ -322,7 +322,7 @@ db.serialize(() => {
     (5, 1), (5, 2), (5, 3);`);
 
     db.run(`CREATE TABLE IF NOT EXISTS familiares_ocupacion (
-        id_familiar_ocupacion INTEGER PRIMARY KEY,
+        id_familiar_ocupacion INTEGER PRIMARY KEY AUTOINCREMENT,
         id_familiar INTEGER NOT NULL,
         id_ocupacion INTEGER NOT NULL,
         FOREIGN KEY (id_familiar) REFERENCES familiares(id_familiar),
@@ -330,7 +330,7 @@ db.serialize(() => {
     );`);
 
     db.run(`CREATE TABLE IF NOT EXISTS familiares_direccion (
-        id_familiar_direccion INTEGER PRIMARY KEY,
+        id_familiar_direccion INTEGER PRIMARY KEY AUTOINCREMENT,
         id_familiar INTEGER NOT NULL,
         id_direccion INTEGER NOT NULL,
         id_ciudad INTEGER NOT NULL,
@@ -339,37 +339,37 @@ db.serialize(() => {
     );`);
 
     db.run(`CREATE TABLE IF NOT EXISTS familiares_parentesco (
-        id_familiar_parentesco INTEGER PRIMARY KEY,
+        id_familiar_parentesco INTEGER PRIMARY KEY AUTOINCREMENT,
         id_familiar INTEGER NOT NULL,
         id_parentesco INTEGER NOT NULL,
         FOREIGN KEY (id_familiar) REFERENCES familiares(id_familiar),
         FOREIGN KEY (id_parentesco) REFERENCES parentescos(id_parentesco)
     );`);
 
-    db.run(`INSERT OR IGNORE INTO parentescos (id_parentesco, descripcion, es_directo) VALUES
-    (1, 'Padre', 1),
-    (2, 'Madre', 1),
-    (3, 'Hijo', 1),
-    (4, 'Hija', 1),
-    (5, 'Hermano', 1),
-    (6, 'Hermana', 1),
-    (7, 'Abuelo', 0),
-    (8, 'Abuela', 0),
-    (9, 'Tío', 0),
-    (10, 'Tía', 0),
-    (11, 'Primo', 0),
-    (12, 'Prima', 0);`);
+    db.run(`INSERT OR IGNORE INTO parentescos (descripcion, es_directo) VALUES
+    ('Padre', 1),
+    ('Madre', 1),
+    ('Hijo', 1),
+    ('Hija', 1),
+    ('Hermano', 1),
+    ('Hermana', 1),
+    ('Abuelo', 0),
+    ('Abuela', 0),
+    ('Tío', 0),
+    ('Tía', 0),
+    ('Primo', 0),
+    ('Prima', 0);`);
 
-    db.run(`INSERT OR IGNORE INTO ocupaciones (id_ocupacion, descripcion) VALUES
-    (1, 'Estudiante'),
-    (2, 'Empleado público'),
-    (3, 'Empleado privado'),
-    (4, 'Independiente'),
-    (5, 'Desempleado'),
-    (6, 'Jubilado');`);
+    db.run(`INSERT OR IGNORE INTO ocupaciones (descripcion) VALUES
+    ('Estudiante'),
+    ('Empleado público'),
+    ('Empleado privado'),
+    ('Independiente'),
+    ('Desempleado'),
+    ('Jubilado');`);
 
     db.run(`CREATE TABLE IF NOT EXISTS pagos (
-        id INTEGER PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         id_usuario INTEGER NOT NULL,
         monto REAL NOT NULL,
         fecha TEXT NOT NULL,
