@@ -188,10 +188,7 @@ db.serialize(() => {
         monto REAL NOT NULL,
         fecha TEXT NOT NULL,
         estado TEXT CHECK (estado IN ('pagado', 'pendiente')) DEFAULT 'pendiente' NOT NULL,
-        servicio_id INTEGER,
-        descripcion TEXT,
         FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
-        FOREIGN KEY (servicio_id) REFERENCES servicios(id)
     );`);
 
 

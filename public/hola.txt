@@ -1,3 +1,0 @@
-hola, esta vacia pero es q si no no se sube la carpeta xd
-aqui van los js que manejan las vistas de la app, los css y las imagenes
-todo en su debida carpeta

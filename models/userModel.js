@@ -142,6 +142,58 @@ const userModel = {
                 }
             });
         });
+    },
+
+    getUserPlan: (id_usuario) => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT p.capacidad_total, p.max_no_directos, p.precio_mensual FROM usuarios u JOIN planes p ON u.plan_id = p.id WHERE u.id_usuario = ?`;
+            db.get(sql, [id_usuario], (err, row) => {
+                if (err) return reject(err);
+                if (row) {
+                    resolve(row);
+                } else {
+                    reject(new Error('Plan no encontrado para el usuario'));
+                }
+            });
+        });
+    },
+
+    makePayment: (id_usuario) => {
+        return new Promise((resolve, reject) => {
+            this.getUserPlan(id_usuario)
+                .then(plan => {
+                    const sql = `INSERT INTO pagos (id_usuario, fecha_pago, monto) VALUES (?, datetime('now'), ?)`;
+                    db.run(sql, [id_usuario, plan.precio_mensual], function(err) {
+                        if (err) return reject(err);
+                        resolve({message: 'Pago realizado exitosamente', paymentId: this.lastID});
+                    });
+                })
+                .catch(err => reject(err));
+        })
+    },
+
+    addFamilyMember: (userData) => {
+        return new Promise((resolve, reject) => {
+            const {id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono, pais, estado, ciudad, id_parentesco, id_ocupacion} = userData;
+            verificarDireccion(pais, estado, ciudad)
+                .then(id_direccion => {
+                    const sql = `INSERT INTO familiares (id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono, id_direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+                    db.run(sql, [id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono, id_direccion], function(err) {
+                        if (err) return reject(err);
+                        const id_familiar = this.lastID;
+                        const insertarParentesco = `INSERT INTO familiares_parentesco (id_familiar, id_parentesco) VALUES (?, ?)`;
+                        db.run(insertarParentesco, [id_familiar, id_parentesco], function(err) {
+                            if (err) return reject(err);
+                            const insertarOcupacion = `INSERT INTO familiares_ocupacion (id_familiar, id_ocupacion) VALUES (?, ?)`;
+                            db.run(insertarOcupacion, [id_familiar, id_ocupacion], function(err) {
+                                if (err) return reject(err);
+                                resolve({message: 'Familiar agregado exitosamente', familyMemberId: id_familiar});
+                            });
+                        });
+                    });
+                })
+                .catch(err => reject(err));
+        });
     }
 
 }
