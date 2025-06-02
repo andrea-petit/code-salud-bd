@@ -105,24 +105,33 @@ function crearDireccion(pais, estado, ciudad) {
 
 function getOcupacionIdByNombre(nombre) {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT id_ocupacion FROM ocupaciones WHERE descripcion = ?`;
-        db.get(sql, [nombre], (err, row) => {
+        if (!nombre) return reject(new Error('El nombre de la ocupación es requerido'));
+        
+        const nombreNormalizado = nombre.trim().toLowerCase();
+        
+        const sql = `SELECT id_ocupacion FROM ocupaciones WHERE LOWER(TRIM(descripcion)) = ?`;
+        db.get(sql, [nombreNormalizado], (err, row) => {
             if (err) return reject(err);
             if (row) {
                 resolve(row.id_ocupacion);
             } else {
                 reject(new Error('Ocupación no encontrada'));
-                console.log('Ocupación no encontrada');
             }
         });
-    })
+    });
 }
 
 const userModel = {
 
     registerUser: (userData) => {
+        console.log('userData recibido en registerUser:', userData);
         return new Promise((resolve, reject) => {
-            const {id_usuario, nombre1, nombre2, apellido1, apellido2, password, fecha_nacimiento, correo, telefono, plan_id, pais, estado, ciudad, ocupacion} = userData;
+            const {
+                id_usuario, nombre1, nombre2, apellido1, apellido2,
+                password, fecha_nacimiento, correo, telefono,
+                plan_id, pais, estado, ciudad, ocupacion
+            } = userData;
+
             Promise.all([
                 verificarDireccion(pais, estado, ciudad),
                 getOcupacionIdByNombre(ocupacion)

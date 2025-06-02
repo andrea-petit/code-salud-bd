@@ -1,24 +1,34 @@
 const userModel = require('../models/userModel');
 
 const userController = {
-    async registerUser(req, res) {
-        try {
-            const { id_usuario, nombre1, nombre2, apellido1, apellido2, password, password2, fecha_nacimiento, correo, telefono, plan_id, pais, estado, ciudad, ocupacion } = req.body;
+async registerUser(req, res) {
+    try {
+        const {
+            id_usuario, nombre1, nombre2, apellido1, apellido2,
+            password, password2, fecha_nacimiento, correo,
+            telefono, plan_id, pais, estado, ciudad, ocupacion
+        } = req.body;
 
-            if (password !== password2) {
-                return res.status(400).json({ message: 'Las contraseñas no coinciden.' });
-            }
+        console.log('req.body recibido en el controlador:', req.body);
 
-            
-
-            const idUsuario = await userModel.registerUser(id_usuario, nombre1, nombre2, apellido1, apellido2, password, fecha_nacimiento, correo, telefono, plan_id, pais, estado, ciudad, ocupacion);
-
-            res.status(201).json({ message: 'Usuario creado con éxito', idUsuario });
-        } catch (error) {
-            console.error('Error al crear usuario:', error);
-            res.status(500).json({ message: 'Error al crear usuario', error: error.message });
+        if (password !== password2) {
+            return res.status(400).json({ message: 'Las contraseñas no coinciden.' });
         }
-    },
+
+        const userData = {
+            id_usuario, nombre1, nombre2, apellido1, apellido2,
+            password, fecha_nacimiento, correo,
+            telefono, plan_id, pais, estado, ciudad, ocupacion
+        };
+
+        const idUsuario = await userModel.registerUser(userData);
+
+        res.status(201).json({ message: 'Usuario creado con éxito', idUsuario });
+    } catch (error) {
+        console.error('Error al crear usuario:', error);
+        res.status(500).json({ message: 'Error al crear usuario', error: error.message });
+    }
+},
 
     async loginUser(req, res) {
         try {
