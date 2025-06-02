@@ -185,18 +185,18 @@ const userModel = {
         });
     },
 
-    makePayment: (id_usuario) => {
+    makePayment: function(id_usuario) {
         return new Promise((resolve, reject) => {
-            this.getUserPlan(id_usuario)
+            userModel.getUserPlan(id_usuario)
                 .then(plan => {
-                    const sql = `INSERT INTO pagos (id_usuario, fecha_pago, monto) VALUES (?, datetime('now'), ?)`;
-                    db.run(sql, [id_usuario, plan.precio_mensual], function(err) {
+                    const sql = `INSERT INTO pagos (id_usuario, monto, fecha, estado) VALUES (?, ?, datetime('now'), ?)`;
+                    db.run(sql, [id_usuario, plan.precio_mensual, "pagado"], function(err) {
                         if (err) return reject(err);
                         resolve({message: 'Pago realizado exitosamente', paymentId: this.lastID});
                     });
                 })
                 .catch(err => reject(err));
-        })
+        });
     },
 
     addFamilyMember: (userData) => {
