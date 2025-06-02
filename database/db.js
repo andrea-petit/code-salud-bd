@@ -13,28 +13,28 @@ const db = new sqlite3.Database(dbPath, (err) => {
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS ocupaciones (
         id_ocupacion INTEGER PRIMARY KEY AUTOINCREMENT,
-        descripcion TEXT NOT NULL
+        descripcion TEXT NOT NULL UNIQUE
     );`);
   
     db.run(`CREATE TABLE IF NOT EXISTS parentescos (
         id_parentesco INTEGER PRIMARY KEY AUTOINCREMENT,
-        descripcion TEXT NOT NULL,
+        descripcion TEXT NOT NULL UNIQUE,
         es_directo BOOLEAN NOT NULL
     );`);
 
     db.run(`CREATE TABLE IF NOT EXISTS paises (
         id_pais INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT NOT NULL
+        nombre TEXT NOT NULL UNIQUE
     );`);
 
     db.run(`CREATE TABLE IF NOT EXISTS estados (
         id_estado INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT NOT NULL
+        nombre TEXT NOT NULL UNIQUE
     );`);
 
     db.run(`CREATE TABLE IF NOT EXISTS ciudades (
         id_ciudad INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT NOT NULL
+        nombre TEXT NOT NULL UNIQUE
     );`);
 
     db.run(`CREATE TABLE IF NOT EXISTS direcciones (
@@ -93,7 +93,7 @@ db.serialize(() => {
 
     db.run(`CREATE TABLE IF NOT EXISTS planes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT NOT NULL,
+        nombre TEXT NOT NULL UNIQUE,
         capacidad_total INTEGER NOT NULL,
         max_no_directos INTEGER NOT NULL,
         precio_mensual REAL NOT NULL
@@ -108,7 +108,7 @@ db.serialize(() => {
 
     db.run(`CREATE TABLE IF NOT EXISTS servicios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT NOT NULL,
+        nombre TEXT NOT NULL UNIQUE,
         tipo TEXT CHECK (tipo IN ('incluido', 'adicional')) NOT NULL,
         precio_base REAL DEFAULT 0
     );`);
@@ -188,7 +188,7 @@ db.serialize(() => {
         monto REAL NOT NULL,
         fecha TEXT NOT NULL,
         estado TEXT CHECK (estado IN ('pagado', 'pendiente')) DEFAULT 'pendiente' NOT NULL,
-        FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
+        FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
     );`);
 
 

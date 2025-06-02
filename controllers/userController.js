@@ -1,17 +1,17 @@
 const userModel = require('../models/userModel');
 
 const userController = {
-    async createUser(req, res) {
+    async registerUser(req, res) {
         try {
-            const { nombre1, nombre2, apellido1, apellido2, correo, telefono, ocupacion, parentesco, pais, estado, ciudad, password, password2 } = req.body;
+            const { id_usuario, nombre1, nombre2, apellido1, apellido2, password, password2, fecha_nacimiento, correo, telefono, plan_id, pais, estado, ciudad, ocupacion } = req.body;
 
             if (password !== password2) {
                 return res.status(400).json({ message: 'Las contraseñas no coinciden.' });
             }
 
-            const idDireccion = await userModel.verificarEstado(pais, estado, ciudad);
+            
 
-            const idUsuario = await userModel.createUser(nombre1, nombre2, apellido1, apellido2, correo, telefono, ocupacion, parentesco, idDireccion, password);
+            const idUsuario = await userModel.registerUser(id_usuario, nombre1, nombre2, apellido1, apellido2, password, fecha_nacimiento, correo, telefono, plan_id, pais, estado, ciudad, ocupacion);
 
             res.status(201).json({ message: 'Usuario creado con éxito', idUsuario });
         } catch (error) {
@@ -72,6 +72,15 @@ const userController = {
         } catch (error) {
             console.error('Error al agregar familiar:', error);
             res.status(500).json({ message: 'Error al agregar familiar', error: error.message });
+        }
+    },
+    async getPlanes(req, res){
+        try {
+            const planes = await userModel.getPlanes();
+            res.status(200).json({ message: 'Planes obtenidos con éxito', planes });
+        } catch (error) {
+            console.error('Error al obtener los planes:', error);
+            res.status(500).json({ message: 'Error al obtener los planes', error: error.message });
         }
     }
 }

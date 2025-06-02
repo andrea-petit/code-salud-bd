@@ -102,31 +102,49 @@ function crearDireccion(pais, estado, ciudad) {
     });
 }
 
+
+function getOcupacionIdByNombre(nombre) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT id_ocupacion FROM ocupaciones WHERE descripcion = ?`;
+        db.get(sql, [nombre], (err, row) => {
+            if (err) return reject(err);
+            if (row) {
+                resolve(row.id_ocupacion);
+            } else {
+                reject(new Error('Ocupación no encontrada'));
+                console.log('Ocupación no encontrada');
+            }
+        });
+    })
+}
+
 const userModel = {
 
     registerUser: (userData) => {
         return new Promise((resolve, reject) => {
-            const {id_usuario, nombre1, nombre2, apellido1, apellido2, password, fecha_nacimiento, correo, telefono, plan_id, pais, estado, ciudad, id_ocupacion} = userData;
-            verificarDireccion(pais, estado, ciudad)
-                .then(id_direccion => {
-                    const sql = `INSERT INTO usuarios (id_usuario, nombre1, nombre2, apellido1, apellido2, password, fecha_nacimiento, correo, telefono, plan_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-                    db.run(sql, [id_usuario, nombre1, nombre2, apellido1, apellido2, password, fecha_nacimiento, correo, telefono, plan_id], function(err) {
+            const {id_usuario, nombre1, nombre2, apellido1, apellido2, password, fecha_nacimiento, correo, telefono, plan_id, pais, estado, ciudad, ocupacion} = userData;
+            Promise.all([
+                verificarDireccion(pais, estado, ciudad),
+                getOcupacionIdByNombre(ocupacion)
+            ])
+            .then(([id_direccion, id_ocupacion]) => {
+                const sql = `INSERT INTO usuarios (id_usuario, nombre1, nombre2, apellido1, apellido2, password, fecha_nacimiento, correo, telefono, plan_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                const insertarDireccion = `INSERT INTO usuarios_direccion (id_usuario, id_direccion) VALUES (?, ?)`;
+                const insertarOcupacion = `INSERT INTO usuarios_ocupacion (id_usuario, id_ocupacion) VALUES (?, ?)`;
+
+                db.run(sql, [id_usuario, nombre1, nombre2, apellido1, apellido2, password, fecha_nacimiento, correo, telefono, plan_id], function(err) {
+                    if (err) return reject(err);
+
+                    db.run(insertarDireccion, [id_usuario, id_direccion], function(err) {
                         if (err) return reject(err);
-                        const userId = this.lastID;
-                        const insertarDireccion = `INSERT INTO usuarios_direccion (id_usuario, id_direccion) VALUES (?, ?)`;
-                        db.run(insertarDireccion, [userId, id_direccion], function(err) {
+                        db.run(insertarOcupacion, [id_usuario, id_ocupacion], function(err) {
                             if (err) return reject(err);
-                            
-                            const insertarOcupacion = `INSERT INTO usuarios_ocupacion (id_usuario, id_ocupacion) VALUES (?, ?)`;
-                            db.run(insertarOcupacion, [userId, id_ocupacion], function(err) {
-                                if (err) return reject(err);
-                                resolve(userId);
-                            });
+                            resolve(id_usuario);
                         });
                     });
-                })
-                .catch(err => reject(err));
-            
+                });
+            })
+            .catch(err => reject(err));
         })
     },
 
@@ -177,8 +195,8 @@ const userModel = {
             const {id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono, pais, estado, ciudad, id_parentesco, id_ocupacion} = userData;
             verificarDireccion(pais, estado, ciudad)
                 .then(id_direccion => {
-                    const sql = `INSERT INTO familiares (id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono, id_direccion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-                    db.run(sql, [id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono, id_direccion], function(err) {
+                    const sql = `INSERT INTO familiares (id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+                    db.run(sql, [id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono], function(err) {
                         if (err) return reject(err);
                         const id_familiar = this.lastID;
                         const insertarParentesco = `INSERT INTO familiares_parentesco (id_familiar, id_parentesco) VALUES (?, ?)`;
@@ -187,15 +205,28 @@ const userModel = {
                             const insertarOcupacion = `INSERT INTO familiares_ocupacion (id_familiar, id_ocupacion) VALUES (?, ?)`;
                             db.run(insertarOcupacion, [id_familiar, id_ocupacion], function(err) {
                                 if (err) return reject(err);
-                                resolve({message: 'Familiar agregado exitosamente', familyMemberId: id_familiar});
+                                const insertarDireccion = `INSERT INTO familiares_direccion (id_familiar, id_direccion) VALUES (?, ?)`;
+                                db.run(insertarDireccion, [id_familiar, id_direccion], function(err) {
+                                    if (err) return reject(err);
+                                    resolve({message: 'Familiar agregado exitosamente', familyMemberId: id_familiar});
+                                });
                             });
                         });
                     });
                 })
                 .catch(err => reject(err));
         });
-    }
+    },
 
+    getPlanes: () => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT * FROM planes`;
+            db.all(sql, [], (err, rows) => {
+                if (err) return reject(err);
+                resolve(rows);
+            });
+        });
+    }
 }
 
 module.exports = userModel;

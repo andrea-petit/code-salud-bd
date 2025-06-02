@@ -3,9 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Registro</title>
 </head>
 <body>
-    
+    <section id="form-container">
+        <div id="personal-data-container" style="display: block;">
+            <form id="personal-data-form">
+                <input type="text" name="id_usuario" placeholder="Numero de Cedula" required>
+                <input type="text" name="nombre1" placeholder="Primer Nombre" required>
+                <input type="text" name="nombre2" placeholder="Segundo Nombre">
+                <input type="text" name="apellido1" placeholder="Primer Apellido" required>
+                <input type="text" name="apellido2" placeholder="Segundo Apellido">
+                <input type="email" name="correo" placeholder="Correo" required>
+                <input type="text" name="telefono" placeholder="Teléfono">
+                <input type="password" name="password" placeholder="Contraseña" required>
+                <input type="password" name="password2" placeholder="Repetir Contraseña" required>
+                <input type="text" name="pais" placeholder="País" required>
+                <input type="text" name="estado" placeholder="Estado" required>
+                <input type="text" name="ciudad" placeholder="Ciudad" required>
+                <input type="date" name="fecha_nacimiento" placeholder="Fecha de Nacimiento" required>
+                <select name="ocupacion" id="ocupacion-select">
+                    <option value="Estudiante">Estudiante</option>
+                    <option value="Empleado público">Empleado público</option>
+                    <option value="Empleado privado">Empleado privado</option>
+                    <option value="Independiente">Independiente</option>
+                    <option value="Desempleado">Desempleado</option>
+                    <option value="Jubilado">Jubilado</option>
+
+                </select>
+                <button id="submit-personal-data" type="button">Registrar</button>
+            </form>
+        </div>
+        <div id="plan-selection" style="display: none;">
+            <h2>Seleccione un plan</h2>
+            <div id="planes-container"></div>
+            <input type="hidden" id="plan_id" name="plan_id" required>
+            <button id="select-plan" type="button">Seleccionar Plan</button>
+        </div>
+        <div id="payment-container" style="display:none;">
+            <form id="payment-form">
+                <select name="payment-type" id="payment-type">
+                    <option value="credit-card">Tarjeta de Crédito</option>
+                    <option value="debit-card">Tarjeta de Débito</option>
+                    <option value="paypal">PayPal</option>
+                </select>
+                <input type="text" name="cardNumber" placeholder="Número de Tarjeta" required>
+
+                <button id="submit-payment" type="button">Pagar</button>
+            </form>
+        </div>
+        <div id="add-family-container" style="display:none;">
+            <form id="add-family-form">
+                <input type="text" name="nombre1" placeholder="Primer Nombre" required>
+                <input type="text" name="nombre2" placeholder="Segundo Nombre">
+                <input type="text" name="apellido1" placeholder="Primer Apellido" required>
+                <input type="text" name="apellido2" placeholder="Segundo Apellido">
+                <input type="email" name="correo" placeholder="Correo" required>
+                <input type="text" name="telefono" placeholder="Teléfono">
+                <input type="text" name="pais" placeholder="País" required>
+                <input type="text" name="estado" placeholder="Estado" required>
+                <input type="text" name="ciudad" placeholder="Ciudad" required>
+                <select name="relationship" id="relationship">
+                    <option value="Madre">Madre</option>
+                    <option value="Padre">Padre</option>
+                    <option value="Hijo">Hijo</option>
+                    <option value="Hija">Hija</option>
+                    <option value="Hermano">Hermano</option>
+                    <option value="Hermana">Hermana</option>
+                    <option value="Abuelo">Abuelo</option>
+                    <option value="Abuela">Abuela</option>
+                    <option value="Tio">Tio</option>
+                    <option value="Tia">Tia</option>
+                    <option value="Primo">Primo</option>
+                    <option value="Prima">Prima</option>
+                </select>
+                <button id="submit-family-member" type="button">Agregar Familiar</button>
+            </form>
+        </div>
+    </section>
+    <script src="/js/register.js"></script>
 </body>
 </html>
