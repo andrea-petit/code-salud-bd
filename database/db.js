@@ -56,6 +56,7 @@ db.serialize(() => {
         apellido2 TEXT NOT NULL,
         correo TEXT UNIQUE,
         telefono TEXT,
+
         FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
     );`);
 
@@ -164,8 +165,8 @@ db.serialize(() => {
     ('Hija', 1),
     ('Hermano', 1),
     ('Hermana', 1),
-    ('Abuelo', 0),
-    ('Abuela', 0),
+    ('Abuelo', 1),
+    ('Abuela', 1),
     ('Tío', 0),
     ('Tía', 0),
     ('Primo', 0),

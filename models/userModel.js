@@ -263,6 +263,28 @@ const userModel = {
                 resolve(rows);
             });
         });
+    },
+
+    getParentescos: () => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT descripcion, es_directo FROM parentescos`
+            db.all(sql, [], (err, rows) => {
+                if(err) return reject(err);
+                resolve(rows);
+            });
+        });
+    },
+
+    getOcupaciones: () => {
+        return new Promise((resolve, reject) => {
+            const sql= `SELECT descripcion FROM ocupaciones`;
+            db.all(sql, [], (err,rows) => {
+                if(err) return reject(err);
+                resolve(rows)
+            })
+        })
+
+
     }
 }
 

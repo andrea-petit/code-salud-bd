@@ -92,6 +92,24 @@ async registerUser(req, res) {
             console.error('Error al obtener los planes:', error);
             res.status(500).json({ message: 'Error al obtener los planes', error: error.message });
         }
+    },
+    async getParentescos(req, res){
+        try{
+            const parentescos = await userModel.getParentescos();
+            res.status(200).json({message: 'Parentescos obtenidos con éxito', parentescos});
+        } catch(error){
+            console.error('Error al obtener los planes: ')
+            res.status(500).json({message: 'Error al obtener los parentescos', error: error.message});
+        }
+    },
+    async getOcupaciones(req, res){
+        try{
+            const ocupaciones = await userModel.getOcupaciones();
+            res.status(200).json({message:'Ocupaciones obtenidas con éxito', ocupaciones});
+        } catch(err){
+            console.error('Error al obtener las ocupaciones');
+            res.status(500).json({message: 'Error al obtener las ocupaciones', error: error.message})
+        }
     }
 }
 

@@ -1,12 +1,7 @@
-const parentescosDirectos = [
-    "Madre", "Padre", "Hijo", "Hija", "Hermano", "Hermana"
-];
-const parentescosNoDirectos = [
-    "Abuelo", "Abuela", "Tio", "Tia", "Primo", "Prima"
-];
-const ocupaciones = [
-    "Estudiante", "Empleado público", "Empleado privado", "Independiente", "Desempleado", "Jubilado"
-];
+async function getOcupaciones_Parentescos(){
+    
+
+}
 
 async function validarCantidadFamilia(id_usuario, no_directos, cantidad) {
     const planData = await fetch(`/api/users/plan/${id_usuario}`);
@@ -144,7 +139,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             document.getElementById('payment-container').style.display = 'none';
             document.getElementById('add-family-container').style.display = 'block';
 
-            // Espera el plan del usuario y llama a crearFormularioFamiliar correctamente
+            
             const userPlanData = await getUserPlan(allData.id_usuario);
             const planNoDirectos = userPlanData.max_no_directos;
             crearFormularioFamiliar(planNoDirectos, allData);
@@ -252,6 +247,7 @@ function crearFormularioFamiliar(planNoDirectos, allData) {
         })
         .then(data => {
             alert('Familiar agregado exitosamente');
+            if(cantidadFamiliares =  )
             crearFormularioFamiliar(planNoDirectos, allData);
         })
         .catch(err => {
