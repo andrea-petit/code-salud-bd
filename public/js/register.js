@@ -1,3 +1,39 @@
+const parentescosDirectos = [
+    "Madre", "Padre", "Hijo", "Hija", "Hermano", "Hermana"
+];
+const parentescosNoDirectos = [
+    "Abuelo", "Abuela", "Tio", "Tia", "Primo", "Prima"
+];
+const ocupaciones = [
+    "Estudiante", "Empleado público", "Empleado privado", "Independiente", "Desempleado", "Jubilado"
+];
+
+async function validarCantidadFamilia(id_usuario, no_directos, cantidad) {
+    const planData = await fetch(`/api/users/plan/${id_usuario}`);
+    const plan = await planData.json();
+    const maxNoDirectos = plan.max_no_directos;
+    const capacidadTotal = plan.capacidad_total;
+
+
+    if (no_directos > maxNoDirectos) {
+        alert(`El plan seleccionado solo permite ${maxNoDirectos} familiares no directos.`);
+        return false;
+    }
+    if (cantidad > capacidadTotal) {
+        alert(`El plan seleccionado solo permite un total de ${capacidadTotal} familiares (incluyendo directos y no directos).`);
+        return false;
+    }
+    return true;
+}
+
+async function getUserPlan(id_usuario) {
+    const response = await fetch(`/api/users/plan/${id_usuario}`);
+    if (!response.ok) {
+        throw new Error('Error al obtener el plan del usuario');
+    }
+    return response.json();
+}
+
 document.addEventListener('DOMContentLoaded', async function() {
     const res = await fetch('/api/users/planes'); 
     const data = await res.json();
@@ -65,6 +101,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const planId = selectedPlan.dataset.planId;
         const planPrice = selectedPlan.querySelector('p:last-child').textContent;
+         
+
 
         document.getElementById('plan-selection').style.display = 'none';
         document.getElementById('payment-container').style.display = 'block';
@@ -85,38 +123,139 @@ document.addEventListener('DOMContentLoaded', async function() {
         };
 
         console.log('Datos a enviar:', allData);
-        fetch('/api/users/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(allData)
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('Error en el registro');
-            }
-        })
-        .then(data => {
-            return fetch('/api/users/payment/' + allData.id_usuario, {
+        try {
+            const response = await fetch('/api/users/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(allData)
+            });
+            if (!response.ok) throw new Error('Error en el registro');
+            await response.json();
+
+            const paymentResponse = await fetch('/api/users/payment/' + allData.id_usuario, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ plan_id: allData.plan_id })
             });
+            if (!paymentResponse.ok) throw new Error('Error en el pago');
+            await paymentResponse.json();
+
+            alert('Registro y pago exitosos');
+            document.getElementById('payment-container').style.display = 'none';
+            document.getElementById('add-family-container').style.display = 'block';
+
+            // Espera el plan del usuario y llama a crearFormularioFamiliar correctamente
+            const userPlanData = await getUserPlan(allData.id_usuario);
+            const planNoDirectos = userPlanData.max_no_directos;
+            crearFormularioFamiliar(planNoDirectos, allData);
+
+        } catch (err) {
+            alert('Error: ' + err.message);
+        }
+    });
+});
+
+function crearFormularioFamiliar(planNoDirectos, allData) {
+    const familiares = document.querySelectorAll('.family-member');
+    let noDirectosActuales = 0;
+    familiares.forEach(fam => {
+        const select = fam.querySelector('select[name="parentesco"]');
+        if (select && parentescosNoDirectos.includes(select.value)) {
+            noDirectosActuales++;
+        }
+    });
+
+    let opcionesParentesco = parentescosDirectos.slice();
+    if (noDirectosActuales < planNoDirectos) {
+        opcionesParentesco = opcionesParentesco.concat(parentescosNoDirectos);
+    }
+
+    const selectHtml = `
+        <select name="parentesco" required>
+            ${opcionesParentesco.map(p => `<option value="${p}">${p}</option>`).join('')}
+        </select>
+    `;
+    const ocupacionSelectHtml = `
+        <select name="ocupacion" required>
+            ${ocupaciones.map(o => `<option value="${o}">${o}</option>`).join('')}
+        </select>
+    `;
+
+    const familyForm = document.getElementById('add-family-form');
+    familyForm.innerHTML = ''; // Limpia el formulario anterior
+    const familyMemberDiv = document.createElement('div');
+    familyMemberDiv.className = 'family-member';
+    familyMemberDiv.innerHTML = `
+        <h4>Familiar</h4>
+        <form>
+            <input type="text" name="id_familiar" placeholder="Cédula del Familiar" required>
+            <input type="text" name="nombre1" placeholder="Primer Nombre" required>
+            <input type="text" name="nombre2" placeholder="Segundo Nombre">
+            <input type="text" name="apellido1" placeholder="Primer Apellido" required>
+            <input type="text" name="apellido2" placeholder="Segundo Apellido">
+            <input type="email" name="correo" placeholder="Correo" required>
+            <input type="text" name="telefono" placeholder="Teléfono">
+            <input type="text" name="pais" placeholder="País" required>
+            <input type="text" name="estado" placeholder="Estado" required>
+            <input type="text" name="ciudad" placeholder="Ciudad" required>
+            ${selectHtml}
+            ${ocupacionSelectHtml}
+            <button class="submit-family-member" type="button">Agregar Familiar</button>
+        </form>
+    `;
+
+    familyForm.appendChild(familyMemberDiv);
+
+    const submitFamilyMemberBtn = familyMemberDiv.querySelector('.submit-family-member');
+    submitFamilyMemberBtn.addEventListener('click', async function() {
+        const formData = new FormData(familyMemberDiv.querySelector('form'));
+        const familyMemberData = {
+            id_familiar: formData.get('id_familiar'),
+            nombre1: formData.get('nombre1'),
+            nombre2: formData.get('nombre2'),
+            apellido1: formData.get('apellido1'),
+            apellido2: formData.get('apellido2'),
+            correo: formData.get('correo'),
+            telefono: formData.get('telefono'),
+            pais: formData.get('pais'),
+            estado: formData.get('estado'),
+            ciudad: formData.get('ciudad'),
+            parentesco: formData.get('parentesco'),
+            ocupacion: formData.get('ocupacion'),
+            id_usuario: allData.id_usuario
+        };
+
+        let noDirectos = 0;
+        document.querySelectorAll('.family-member').forEach(fam => {
+            const select = fam.querySelector('select[name="parentesco"]');
+            if (select && parentescosNoDirectos.includes(select.value)) {
+                noDirectos++;
+            }
+        });
+        const cantidadFamiliares = document.querySelectorAll('.family-member').length + 1;
+
+        if (!await validarCantidadFamilia(allData.id_usuario, noDirectos, cantidadFamiliares)) {
+            return;
+        }
+
+        fetch('/api/users/addFamilyMember', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(familyMemberData)
         })
         .then(response => {
             if (response.ok) {
                 return response.json();
             } else {
-                throw new Error('Error en el pago');
+                throw new Error('Error al agregar familiar');
             }
         })
-        .then(paymentData => {
-            alert('Registro y pago exitosos');
-            window.location.href = '/login'; 
+        .then(data => {
+            alert('Familiar agregado exitosamente');
+            crearFormularioFamiliar(planNoDirectos, allData);
         })
         .catch(err => {
             alert('Error: ' + err.message);
         });
     });
-});
+}

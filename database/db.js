@@ -56,8 +56,6 @@ db.serialize(() => {
         apellido2 TEXT NOT NULL,
         correo TEXT UNIQUE,
         telefono TEXT,
-        id_direccion INTEGER,
-        FOREIGN KEY (id_direccion) REFERENCES direcciones(id_direccion),
         FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
     );`);
 
@@ -147,7 +145,6 @@ db.serialize(() => {
         id_familiar_direccion INTEGER PRIMARY KEY AUTOINCREMENT,
         id_familiar INTEGER NOT NULL,
         id_direccion INTEGER NOT NULL,
-        id_ciudad INTEGER NOT NULL,
         FOREIGN KEY (id_familiar) REFERENCES familiares(id_familiar),
         FOREIGN KEY (id_direccion) REFERENCES direcciones(id_direccion)
     );`);
