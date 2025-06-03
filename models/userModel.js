@@ -121,6 +121,24 @@ function getOcupacionIdByNombre(nombre) {
     });
 }
 
+function getParentescoIdByNombre(nombre) {
+    return new Promise((resolve, reject) => {
+        if (!nombre) return reject(new Error('El nombre del parentesco es requerido'));
+        
+        const nombreNormalizado = nombre.trim().toLowerCase();
+        
+        const sql = `SELECT id_parentesco FROM parentescos WHERE LOWER(TRIM(descripcion)) = ?`;
+        db.get(sql, [nombreNormalizado], (err, row) => {
+            if (err) return reject(err);
+            if (row) {
+                resolve(row.id_parentesco);
+            } else {
+                reject(new Error('Parentesco no encontrado'));
+            }
+        });
+    });
+}
+
 const userModel = {
 
     registerUser: (userData) => {
@@ -201,29 +219,39 @@ const userModel = {
 
     addFamilyMember: (userData) => {
         return new Promise((resolve, reject) => {
-            const {id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono, pais, estado, ciudad, id_parentesco, id_ocupacion} = userData;
-            verificarDireccion(pais, estado, ciudad)
-                .then(id_direccion => {
-                    const sql = `INSERT INTO familiares (id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-                    db.run(sql, [id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono], function(err) {
+            const { id_familiar, id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono, pais, estado, ciudad, parentesco, ocupacion } = userData;
+
+            Promise.all([
+                verificarDireccion(pais, estado, ciudad),
+                getParentescoIdByNombre(parentesco),
+                getOcupacionIdByNombre(ocupacion)
+            ])
+            .then(([id_direccion, id_parentesco, id_ocupacion]) => {
+                
+                const sql = `INSERT INTO familiares (id_familiar, id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+                db.run(sql, [id_familiar, id_usuario, nombre1, nombre2, apellido1, apellido2, correo, telefono], function(err) {
+                    if (err) return reject(err);
+                    const id_familiar = this.lastID;
+
+                    
+                    const insertarFamiliarDireccion = `INSERT INTO familiares_direccion (id_familiar, id_direccion) VALUES (?, ?)`;
+                    db.run(insertarFamiliarDireccion, [id_familiar, id_direccion], function(err) {
                         if (err) return reject(err);
-                        const id_familiar = this.lastID;
-                        const insertarParentesco = `INSERT INTO familiares_parentesco (id_familiar, id_parentesco) VALUES (?, ?)`;
-                        db.run(insertarParentesco, [id_familiar, id_parentesco], function(err) {
+
+                        const insertarOcupacion = `INSERT INTO familiares_ocupacion (id_familiar, id_ocupacion) VALUES (?, ?)`;
+                        db.run(insertarOcupacion, [id_familiar, id_ocupacion], function(err) {
                             if (err) return reject(err);
-                            const insertarOcupacion = `INSERT INTO familiares_ocupacion (id_familiar, id_ocupacion) VALUES (?, ?)`;
-                            db.run(insertarOcupacion, [id_familiar, id_ocupacion], function(err) {
+
+                            const insertarParentesco = `INSERT INTO familiares_parentesco (id_familiar, id_parentesco) VALUES (?, ?)`;
+                            db.run(insertarParentesco, [id_familiar, id_parentesco], function(err) {
                                 if (err) return reject(err);
-                                const insertarDireccion = `INSERT INTO familiares_direccion (id_familiar, id_direccion) VALUES (?, ?)`;
-                                db.run(insertarDireccion, [id_familiar, id_direccion], function(err) {
-                                    if (err) return reject(err);
-                                    resolve({message: 'Familiar agregado exitosamente', familyMemberId: id_familiar});
-                                });
+                                resolve({ message: 'Familiar agregado exitosamente', familyMemberId: id_familiar });
                             });
                         });
                     });
-                })
-                .catch(err => reject(err));
+                });
+            })
+            .catch(err => reject(err));
         });
     },
 
