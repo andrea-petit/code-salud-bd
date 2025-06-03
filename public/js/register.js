@@ -47,9 +47,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         card.dataset.planId = plan.id;
         card.innerHTML = `
             <h3>${plan.nombre}</h3>
-            <p>Capacidad: ${plan.capacidad_total}</p>
-            <p>No Directos: ${plan.max_no_directos}</p>
-            <p>Precio: $${plan.precio_mensual}</p>
+            <p><li>Capacidad: ${plan.capacidad_total}</li></p>
+            <p><li>No Directos: ${plan.max_no_directos}</li></p>
+            <p><li>Precio: $${plan.precio_mensual}</li></p>
         `;
         card.addEventListener('click', function() {
             document.querySelectorAll('.plan-card.selected').forEach(el => el.classList.remove('selected'));
