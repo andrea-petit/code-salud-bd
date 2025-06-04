@@ -1,16 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,800;1,800&display=swap');
-*{
-    transition: all linear 100ms;
-}
-
-body.login-bg {
-    background-image: url('/img/fondo1.png');
-    background-size: cover;
-    background-position:bottom;
-}
 
 body.register-bg {
-    background: linear-gradient(#4e54c8 0, #5DB640) ;
+    background: linear-gradient(#4e54c8 0, #5DB640);
 }
 
 body {
@@ -18,8 +9,25 @@ body {
     margin: 0 20px 0 0;
     font-family: 'Segoe UI', Arial, sans-serif;
     display: flex;
-    justify-content: right;
+    justify-content: center;
     align-items: center;
+}
+
+.logo-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.logo-title img {
+    width: 120px;
+    height: auto;
+}
+
+.logo-title h1 {
+    margin: 0;
 }
 
 #form-container {
@@ -42,7 +50,6 @@ body {
 }
 
 #form-container h2 {
-    
     font-family: "Poppins", sans-serif;
     font-weight: 700;
     font-style: normal;
@@ -67,6 +74,17 @@ input:focus, select:focus {
     border-color: #4e54c8;
     background: #f3f6fd;
 }
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
 
 button {
     background: linear-gradient(90deg, #4e54c8, #8f94fb);
@@ -155,82 +173,6 @@ button:hover {
     font-size: 0.97rem;
 }
 
-
-.login-container {
-    background: #ffffff;
-    padding: 2.5rem 2rem;
-    border-radius: 18px;
-    box-shadow: 0 8px 32px #1a5307;
-    width: 100%;
-    max-width: 420px;
-    margin: 2rem 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.login-container h1 {
-    margin-bottom: 1.5rem;
-    letter-spacing: 2px;
-    text-align: center;
-    font-family: "Poppins", sans-serif;
-    font-weight: 800;
-    font-style: normal;
-    cursor: default;
-}
-
-.login-container form {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.85rem;
-}
-
-.login-container .options {
-    display: flex;
-    align-items: center;
-    margin-bottom: 0.5rem;
-}
-
-
-.login-container .cuenta {
-    font-size: 1rem;
-    color: #555;
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-    text-align: center;
-}
-
-.login-container a {
-    color: #4e54c8;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.2s;
-}
-
-.login-container a:hover {
-    color: #8f94fb;
-    text-decoration: underline;
-}
-
-.logo-title {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-}
-
-.logo-title img {
-    width: 120px;
-    height: auto;
-}
-
-.logo-title h1 {
-    margin: 0;
-}
-
-
 @media (max-width: 500px) {
     #form-container {
         padding: 1.2rem 0.5rem;
@@ -239,16 +181,6 @@ button:hover {
     input, select, button {
         font-size: 0.97rem;
         padding: 0.6rem 0.7rem;
-    }
-    .login-container {
-        padding: 1.2rem 0.5rem;
-        max-width: 98vw;
-    }
-    .logo-title img {
-        width: 80px;
-    }
-    .logo-title h1 {
-        font-size: 1.5rem;
     }
 }
 
@@ -273,5 +205,3 @@ button:hover {
         gap: 0.7rem;
     }
 }
-
-

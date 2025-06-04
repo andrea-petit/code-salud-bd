@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="/img/logo2 Photoroom.png" type="image/x-icon">
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/register.css">
     <title>Registro</title>
 </head>
 <body class="register-bg">
@@ -19,14 +19,14 @@
         </div>
         <div id="personal-data-container">
             <h2>Datos Básicos</h2>
-            <form id="personal-data-form">
-                <input type="text" name="id_usuario" placeholder="Numero de Cedula" required>
+            <form id="personal-data-form" class="was-validated">
+                <input type="number" name="id_usuario" placeholder="Numero de Cedula" min="0" required>
                 <input type="text" name="nombre1" placeholder="Primer Nombre" required>
                 <input type="text" name="nombre2" placeholder="Segundo Nombre">
                 <input type="text" name="apellido1" placeholder="Primer Apellido" required>
                 <input type="text" name="apellido2" placeholder="Segundo Apellido">
                 <input type="email" name="correo" placeholder="Correo" required>
-                <input type="text" name="telefono" placeholder="Teléfono">
+                <input type="number" name="telefono" placeholder="Teléfono" min="0">
                 <input type="password" name="password" placeholder="Contraseña" required>
                 <input type="password" name="password2" placeholder="Repetir Contraseña" required>
                 <input type="text" name="pais" placeholder="País" required>
@@ -59,7 +59,7 @@
                     <option value="debit-card">Tarjeta de Débito</option>
                     <option value="paypal">PayPal</option>
                 </select>
-                <input type="text" name="cardNumber" placeholder="Número de Tarjeta" required>
+                <input type="number" name="cardNumber" placeholder="Número de Tarjeta" min="0" minlength="13" maxlength="19" required>
 
                 <button id="submit-payment" type="button">Pagar</button>
             </form>

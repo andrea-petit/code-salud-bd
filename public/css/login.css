@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,800;1,800&display=swap');
+
+body.login-bg {
+    background-image: url('/img/fondo.png');
+    background-size: cover;
+    background-position: bottom;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0 50px 0 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+
+.login-container {
+    background: #ffffff;
+    padding: 2.5rem 2rem;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px #4f504f;
+    width: 100%;
+    max-width: 420px;
+    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-container h1 {
+    margin-bottom: 1.5rem;
+    letter-spacing: 2px;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+    font-weight: 800;
+    font-style: normal;
+    cursor: default;
+}
+
+.login-container form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.login-container .options {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.login-container .cuenta {
+    font-size: 1rem;
+    color: #555;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.login-container a {
+    color: #4e54c8;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.login-container a:hover {
+    color: #8f94fb;
+    text-decoration: underline;
+}
+
+.logo-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.logo-title img {
+    width: 120px;
+    height: auto;
+}
+
+.logo-title h1 {
+    margin: 0;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.50rem;
+}
+
+input, select, button {
+    font-size: 1rem;
+    padding: 0.7rem 1rem;
+    border-radius: 7px;
+    border: 1px solid #d1d5db;
+    outline: none;
+    transition: border 0.2s;
+}
+
+input:focus, select:focus {
+    border-color: #4e54c8;
+    background: #f3f6fd;
+}
+
+button {
+    background: linear-gradient(90deg, #4e54c8, #8f94fb);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    transition: background 0.2s, transform 0.1s;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #5DB640, #b1ff97);
+    transform: translateY(-2px) scale(1.03);
+}
+
+@media (max-width: 500px) {
+    .login-container {
+        padding: 1.2rem 0.5rem;
+        max-width: 98vw;
+    }
+    .logo-title img {
+        width: 80px;
+    }
+    .logo-title h1 {
+        font-size: 1.5rem;
+    }
+    input, select, button {
+        font-size: 0.97rem;
+        padding: 0.6rem 0.7rem;
+    }
+}
