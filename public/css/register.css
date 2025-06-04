@@ -157,6 +157,16 @@ button:hover {
     font-size: 1rem;
 }
 
+.plan-card li {
+    list-style: none;
+}
+
+.plan-card li::before {
+    content:"•";
+    color: grey;
+    margin-right: 10px;
+}
+
 .plan-card .plan-price {
     color: #5DB640;
     font-weight: 700;
