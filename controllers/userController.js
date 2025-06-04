@@ -110,7 +110,21 @@ async registerUser(req, res) {
             console.error('Error al obtener las ocupaciones');
             res.status(500).json({message: 'Error al obtener las ocupaciones', error: error.message})
         }
-    }
+    },
+    async countFamilyMembers(req, res){
+        try {
+            const { id_usuario } = req.params;
+
+            const count = await userModel.countFamilyMembers(id_usuario);
+
+            res.status(200).json({ message: 'Cantidad de familiares obtenida con éxito', count });
+        } catch (error) {
+            console.error('Error al contar los familiares:', error);
+            res.status(500).json({ message: 'Error al contar los familiares', error: error.message });
+        }
+        
+    },
+
 }
 
 module.exports = userController;

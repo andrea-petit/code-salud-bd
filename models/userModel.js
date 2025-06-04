@@ -285,7 +285,27 @@ const userModel = {
         })
 
 
-    }
+    },
+
+    countFamilyMembers:(id_usuario) => {
+        const result = db.all(`SELECT parentesco FROM familiares WHERE id_usuario = ?`, [id_usuario]);
+
+        let total = result.length;
+        let noDirectos = 0;
+
+        for (let row of result) {
+            const p = db.get(`SELECT es_directo FROM parentescos WHERE descripcion = ?`, [row.parentesco]);
+            if (p && p.es_directo === 0) {
+                noDirectos++;
+            }
+        }
+
+        return new Promise((resolve, reject) => {
+            resolve({ total, noDirectos });
+        });
+    },
+
+    
 }
 
 module.exports = userModel;

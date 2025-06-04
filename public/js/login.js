@@ -3,8 +3,8 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
 
     const form = e.target;
     const data = {
-        nombre_usuario: form.id_usuario.value,
-        contraseña: form.password.value
+        id_usuario: form.id_usuario.value,
+        password: form.password.value
     };
 
     try {
