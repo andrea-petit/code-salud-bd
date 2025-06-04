@@ -304,6 +304,7 @@ const userModel = {
             resolve({ total, noDirectos });
         });
     },
+    //holas
 
     
 }
