@@ -1,90 +1,40 @@
 const db = require('../database/db');
 
-function verificarDireccion(pais, estado, ciudad){
+function verificarDireccion(paisNombre, estadoNombre, ciudadNombre) {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT id_direccion FROM direcciones WHERE pais = ? AND estado = ? AND ciudad = ?`;
-        db.get(sql, [pais, estado, ciudad], (err, row) => {
-            if (err) {
-                reject(err);
-            } else if (row) {
-                resolve(row.id_direccion);
-            } else {
-                verificarPais(pais, estado, ciudad)
-                    .then(idDireccion => resolve(idDireccion))
-                    .catch(err => reject(err));
-            }
-        });
+        verificarPais(paisNombre, estadoNombre, ciudadNombre)
+            .then(({ id_pais, id_estado, id_ciudad }) => {
+                const sql = `SELECT id_direccion FROM direcciones WHERE pais = ? AND estado = ? AND ciudad = ?`;
+                db.get(sql, [id_pais, id_estado, id_ciudad], (err, row) => {
+                    if (err) return reject(err);
+                    if (row) {
+                        resolve(row.id_direccion);
+                    } else {
+                        crearDireccion(id_pais, id_estado, id_ciudad)
+                            .then(id => resolve(id))
+                            .catch(err => reject(err));
+                    }
+                });
+            })
+            .catch(err => reject(err));
     });
-
 }
 
-function verificarPais(pais, estado, ciudad) {
+function verificarPais(nombrePais, nombreEstado, nombreCiudad) {
     return new Promise((resolve, reject) => {
-        const sql = `SELECT * FROM paises WHERE nombre = ?`;
-        db.get(sql, [pais], (err, row) => {
-            if (err) return reject(err);
-            if (row){
-                id_pais = row.id_pais;
-                verificarEstado(id_pais, estado, ciudad)
-                    .then(idDireccion => resolve(idDireccion))
-                    .catch(err => reject(err));
-            }
-            else {
-                const insertSql = `INSERT INTO paises (nombre) VALUES (?)`;
-                db.run(insertSql, [pais], function(err) {
-                    if (err) return reject(err);
-                    verificarEstado(this.lastID, estado, ciudad)
-                        .then(idDireccion => resolve(idDireccion))
-                        .catch(err => reject(err));
-                });
-            }
-        })
-
-
-    })
-}
-
-function verificarEstado(id_pais, estado, ciudad) {
-    return new Promise((resolve, reject) => {
-        const sql = `SELECT * FROM estados WHERE nombre = ?`;
-        db.get(sql, [estado], (err, row) => {
-            if (err) return reject(err);
-            if (row){
-                id_estado = row.id_estado;
-                verificarCiudad(id_pais, id_estado, ciudad)
-                    .then(idDireccion => resolve(idDireccion))
-                    .catch(err => reject(err));
-            }
-            else {
-                const insertSql = `INSERT INTO estados (nombre) VALUES ( ?)`;
-                db.run(insertSql, [estado], function(err) {
-                    if (err) return reject(err);
-                    verificarCiudad(id_pais, this.lastID, ciudad)
-                        .then(idDireccion => resolve(idDireccion))
-                        .catch(err => reject(err));
-                });
-            }
-        })
-    })
-}
-
-function verificarCiudad(id_pais, id_estado, ciudad) {
-    return new Promise((resolve, reject) => {
-        const sql = `SELECT * FROM ciudades WHERE nombre = ?`;
-        db.get(sql, [ciudad], (err, row) => {
+        const sql = `SELECT id_pais FROM paises WHERE nombre = ?`;
+        db.get(sql, [nombrePais], (err, row) => {
             if (err) return reject(err);
             if (row) {
-                
-                crearDireccion(id_pais, id_estado, row.id_ciudad)
-                    .then(idDireccion => resolve(idDireccion))
+                verificarEstado(row.id_pais, nombreEstado, nombreCiudad)
+                    .then(data => resolve(data))
                     .catch(err => reject(err));
             } else {
-                
-                const insertSql = `INSERT INTO ciudades (nombre) VALUES  (?)`;
-                db.run(insertSql, [ciudad], function(err) {
+                const insertSql = `INSERT INTO paises (nombre) VALUES (?)`;
+                db.run(insertSql, [nombrePais], function(err) {
                     if (err) return reject(err);
-                    crearDireccion(id_pais, id_estado, this.lastID)
-                        .then(idDireccion => resolve(idDireccion))
+                    verificarEstado(this.lastID, nombreEstado, nombreCiudad)
+                        .then(data => resolve(data))
                         .catch(err => reject(err));
                 });
             }
@@ -92,10 +42,50 @@ function verificarCiudad(id_pais, id_estado, ciudad) {
     });
 }
 
-function crearDireccion(pais, estado, ciudad) {
+function verificarEstado(id_pais, nombreEstado, nombreCiudad) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT id_estado FROM estados WHERE nombre = ?`;
+        db.get(sql, [nombreEstado], (err, row) => {
+            if (err) return reject(err);
+            if (row) {
+                verificarCiudad(id_pais, row.id_estado, nombreCiudad)
+                    .then(data => resolve(data))
+                    .catch(err => reject(err));
+            } else {
+                const insertSql = `INSERT INTO estados (nombre) VALUES (?)`;
+                db.run(insertSql, [nombreEstado], function(err) {
+                    if (err) return reject(err);
+                    verificarCiudad(id_pais, this.lastID, nombreCiudad)
+                        .then(data => resolve(data))
+                        .catch(err => reject(err));
+                });
+            }
+        });
+    });
+}
+
+function verificarCiudad(id_pais, id_estado, nombreCiudad) {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT id_ciudad FROM ciudades WHERE nombre = ?`;
+        db.get(sql, [nombreCiudad], (err, row) => {
+            if (err) return reject(err);
+            if (row) {
+                resolve({ id_pais, id_estado, id_ciudad: row.id_ciudad });
+            } else {
+                const insertSql = `INSERT INTO ciudades (nombre) VALUES (?)`;
+                db.run(insertSql, [nombreCiudad], function(err) {
+                    if (err) return reject(err);
+                    resolve({ id_pais, id_estado, id_ciudad: this.lastID });
+                });
+            }
+        });
+    });
+}
+
+function crearDireccion(id_pais, id_estado, id_ciudad) {
     return new Promise((resolve, reject) => {
         const sql = `INSERT INTO direcciones (pais, estado, ciudad) VALUES (?, ?, ?)`;
-        db.run(sql, [pais, estado, ciudad], function(err) {
+        db.run(sql, [id_pais, id_estado, id_ciudad], function(err) {
             if (err) return reject(err);
             resolve(this.lastID);
         });

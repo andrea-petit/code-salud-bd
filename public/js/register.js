@@ -9,15 +9,17 @@ async function getReferencias() {
             console.error('Error al obtener ocupaciones:', err);
             return { ocupaciones: [] };
         });
-    const { parentescosDirectos: pd, parentescosNoDirectos: pnd } = await fetch('api/users/parentescos')
+
+    const { parentescos = [] } = await fetch('api/users/parentescos')
         .then(res => res.json())
         .catch(err => {
             console.error('Error al obtener parentescos:', err);
-            return { parentescosDirectos: [], parentescosNoDirectos: [] };
+            return { parentescos: [] };
         });
+
     ocupaciones = o || [];
-    parentescosDirectos = pd || [];
-    parentescosNoDirectos = pnd || [];
+    parentescosDirectos = parentescos.filter(p => p.es_directo === 1);
+    parentescosNoDirectos = parentescos.filter(p => p.es_directo === 0);
 }
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -309,6 +311,14 @@ function crearFormularioFamiliar(
                 crearFormularioFamiliar(planNoDirectos, planCapacidadTotal, allData, familiaresActuales);
             } else {
                 familyForm.innerHTML = '<p>Ya alcanzaste el máximo de familiares permitidos por tu plan.</p>';
+                const finalizarBtn = document.createElement('button');
+                finalizarBtn.textContent = 'Finalizar';
+                finalizarBtn.type = 'button';
+                finalizarBtn.className = 'finalizar-familiares';
+                finalizarBtn.addEventListener('click', function() {
+                    alert('Registro de familiares finalizado.');
+                    window.location.href = '/login';
+                });
             }
         })
         .catch(err => {
