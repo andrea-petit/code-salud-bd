@@ -1,3 +1,4 @@
+const { get } = require('http');
 const db = require('../database/db');
 
 function verificarDireccion(paisNombre, estadoNombre, ciudadNombre) {
@@ -294,7 +295,123 @@ const userModel = {
             resolve({ total, noDirectos });
         });
     },
-    //holas
+
+    // Aquí empiezan las funciones de menú
+    getUserInfo: (id_usuario) => {
+        //user info + direccion + ocupacion + plan
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT u.id_usuario, u.nombre1, u.nombre2, u.apellido1, u.apellido2, u.correo, u.telefono, u.fecha_nacimiento,
+                                d.pais, d.estado, d.ciudad, o.descripcion AS ocupacion, p.capacidad_total, p.max_no_directos, p.precio_mensual
+                         FROM usuarios u
+                         JOIN usuarios_direccion ud ON u.id_usuario = ud.id_usuario
+                         JOIN direcciones d ON ud.id_direccion = d.id_direccion
+                         JOIN usuarios_ocupacion uo ON u.id_usuario = uo.id_usuario
+                         JOIN ocupaciones o ON uo.id_ocupacion = o.id_ocupacion
+                         JOIN planes p ON u.plan_id = p.id
+                         WHERE u.id_usuario = ?`;
+            db.get(sql, [id_usuario], (err, row) => {
+                if (err) return reject(err);
+                if (row) {
+                    resolve(row);
+                } else {
+                    reject(new Error('Usuario no encontrado'));
+                }
+            });
+        });
+    },
+    
+    getFamilyMembers: (id_usuario) => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT f.id_familiar, f.nombre1, f.nombre2, f.apellido1, f.apellido2, f.correo, f.telefono, p.descripcion AS parentesco, o.descripcion AS ocupacion
+                         FROM familiares f
+                         JOIN familiares_parentesco fp ON f.id_familiar = fp.id_familiar
+                         JOIN parentescos p ON fp.id_parentesco = p.id_parentesco
+                         JOIN familiares_ocupacion fo ON f.id_familiar = fo.id_familiar
+                         JOIN ocupaciones o ON fo.id_ocupacion = o.id_ocupacion
+                         WHERE f.id_usuario = ?`;
+            db.all(sql, [id_usuario], (err, rows) => {
+                if (err) return reject(err);
+                resolve(rows);
+            });
+        });
+    },
+    updateUserInfo: (id_usuario, campo, valor) => {
+        return new Promise((resolve, reject) => {
+            const sql = `UPDATE usuarios SET ${campo} = ? WHERE id_usuario = ?`;
+            db.run(sql, [valor, id_usuario], function(err) {
+                if (err) return reject(err);
+                if (this.changes > 0) {
+                    resolve({ message: 'Información actualizada exitosamente' });
+                } else {
+                    reject(new Error('No se encontró el usuario o no se realizaron cambios'));
+                }
+            });
+        });
+    },
+    updateFamilyMember: (id_familiar, campo, valor) => {
+        return new Promise((resolve, reject) => {
+            const sql = `UPDATE familiares SET ${campo} = ? WHERE id_familiar = ?`;
+            db.run(sql, [valor, id_familiar], function(err) {
+                if (err) return reject(err);
+                if (this.changes > 0) {
+                    resolve({ message: 'Información del familiar actualizada exitosamente' });
+                } else {
+                    reject(new Error('No se encontró el familiar o no se realizaron cambios'));
+                }
+            });
+        });
+    },
+    deleteFamilyMember: (id_familiar) => {
+        return new Promise((resolve, reject) => {
+            const sql = `DELETE FROM familiares WHERE id_familiar = ?`;
+            db.run(sql, [id_familiar], function(err) {
+                if (err) return reject(err);
+                if (this.changes > 0) {
+                    resolve({ message: 'Familiar eliminado exitosamente' });
+                } else {
+                    reject(new Error('No se encontró el familiar o no se realizaron cambios'));
+                }
+            });
+        });
+    },
+    makePaymentPendiente(id_usuario) {
+        return new Promise((resolve, reject) => {
+            userModel.getUserPlan(id_usuario)
+                .then(plan => {
+                    const sql = `INSERT INTO pagos (id_usuario, monto, fecha, estado) VALUES (?, ?, datetime('now'), ?)`;
+                    db.run(sql, [id_usuario, plan.precio_mensual, "pendiente"], function(err) {
+                        if (err) return reject(err);
+                        resolve({message: 'Pago pendiente registrado exitosamente', paymentId: this.lastID});
+                    });
+                })
+                .catch(err => reject(err));
+        });
+    },
+
+    PayPendiente: (id_pago) => {
+        return new Promise((resolve, reject) => {
+            const sql = `UPDATE pagos SET estado = ? WHERE id_pago = ?`;
+            db.run(sql, ["pagado", id_pago], function(err) {
+                if (err) return reject(err);
+                if (this.changes > 0) {
+                    resolve({ message: 'Pago marcado como pagado exitosamente' });
+                } else {
+                    reject(new Error('No se encontró el pago o no se realizaron cambios'));
+                }
+            });
+        });
+    },
+    getPaymentHistory: (id_usuario) => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT * FROM pagos WHERE id_usuario = ? ORDER BY fecha DESC`;
+            db.all(sql, [id_usuario], (err, rows) => {
+                if (err) return reject(err);
+                resolve(rows);
+            });
+        });
+    }
+
+
 
     
 }

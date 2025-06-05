@@ -124,6 +124,128 @@ async registerUser(req, res) {
         }
         
     },
+    async getUserInfo(req, res) {
+        try {
+            const { id_usuario } = req.params;
+
+            const userInfo = await userModel.getUserInfo(id_usuario);
+
+            if (!userInfo) {
+                return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+
+            res.status(200).json({ message: 'Información del usuario obtenida con éxito', userInfo });
+        } catch (error) {
+            console.error('Error al obtener la información del usuario:', error);
+            res.status(500).json({ message: 'Error al obtener la información del usuario', error: error.message });
+        }
+    },
+    async getFamilyMembers(req, res){
+        try {
+            const { id_usuario } = req.params;
+
+            const familyMembers = await userModel.getFamilyMembers(id_usuario);
+
+            if (!familyMembers || familyMembers.length === 0) {
+                return res.status(404).json({ message: 'No se encontraron familiares' });
+            }
+
+            res.status(200).json({ message: 'Familiares obtenidos con éxito', familyMembers });
+        } catch (error) {
+            console.error('Error al obtener los familiares:', error);
+            res.status(500).json({ message: 'Error al obtener los familiares', error: error.message });
+        }
+    },
+    async updateUserInfo(req, res) {
+        try {
+            const { id_usuario } = req.params;
+            const{campo, valor}= req.body;
+
+            const updatedUser = await userModel.updateUserInfo(id_usuario, campo, valor);
+
+            if (!updatedUser) {
+                return res.status(404).json({ message: 'Usuario no encontrado' });
+            }
+
+            res.status(200).json({ message: 'Información del usuario actualizada con éxito', updatedUser });
+        } catch (error) {
+            console.error('Error al actualizar la información del usuario:', error);
+            res.status(500).json({ message: 'Error al actualizar la información del usuario', error: error.message });
+        }
+    },
+    async updateFamilyMember(req, res){
+        try {
+            const { id_familiar } = req.params;
+            const { campo, valor } = req.body;
+
+            const updatedFamilyMember = await userModel.updateFamilyMember(id_familiar, campo, valor);
+
+            if (!updatedFamilyMember) {
+                return res.status(404).json({ message: 'Familiar no encontrado' });
+            }
+
+            res.status(200).json({ message: 'Información del familiar actualizada con éxito', updatedFamilyMember });
+        } catch (error) {
+            console.error('Error al actualizar la información del familiar:', error);
+            res.status(500).json({ message: 'Error al actualizar la información del familiar', error: error.message });
+        }
+    },
+    async deleteFamilyMember(req, res) {
+        try {
+            const { id_familiar } = req.params;
+
+            const deletedFamilyMember = await userModel.deleteFamilyMember(id_familiar);
+
+            if (!deletedFamilyMember) {
+                return res.status(404).json({ message: 'Familiar no encontrado' });
+            }
+
+            res.status(200).json({ message: 'Familiar eliminado con éxito', deletedFamilyMember });
+        } catch (error) {
+            console.error('Error al eliminar el familiar:', error);
+            res.status(500).json({ message: 'Error al eliminar el familiar', error: error.message });
+        }
+    },
+    async makePaymentPendiente(req, res){
+        try {
+            const { id_usuario } = req.params;
+
+            const payment = await userModel.makePayPendiente(id_usuario);
+
+            res.status(200).json({ message: 'Pago pendiente realizado exitosamente', payment });
+        } catch (error) {
+            console.error('Error al realizar el pago pendiente:', error);
+            res.status(500).json({ message: 'Error al realizar el pago pendiente', error: error.message });
+        }
+    },
+    async payPendiente(req, res){
+        try {
+            const { id_usuario } = req.params;
+
+            const payment = await userModel.PayPendiente(id_usuario);
+
+            res.status(200).json({ message: 'Pago pendiente obtenido exitosamente', payment });
+        } catch (error) {
+            console.error('Error al obtener el pago pendiente:', error);
+            res.status(500).json({ message: 'Error al obtener el pago pendiente', error: error.message });
+        }
+    },
+    async getPaymentHistory(req, res){
+        try {
+            const { id_usuario } = req.params;
+
+            const paymentHistory = await userModel.getPaymentHistory(id_usuario);
+
+            if (!paymentHistory || paymentHistory.length === 0) {
+                return res.status(404).json({ message: 'No se encontraron pagos' });
+            }
+
+            res.status(200).json({ message: 'Historial de pagos obtenido con éxito', paymentHistory });
+        } catch (error) {
+            console.error('Error al obtener el historial de pagos:', error);
+            res.status(500).json({ message: 'Error al obtener el historial de pagos', error: error.message });
+        }
+    }
 
 }
 
