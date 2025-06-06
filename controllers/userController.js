@@ -35,6 +35,13 @@ async registerUser(req, res) {
             const { id_usuario, password } = req.body;
 
             const user = await userModel.loginUser(id_usuario, password);
+            if(user){
+                req.session.user= {
+                    id_usuario: user.id_usuario,
+                    nombre1: user.nombre1,
+                    nombre2: user.nombre2,
+                }
+            }
 
             res.status(200).json({ message: 'Login exitoso', user });
         } catch (error) {

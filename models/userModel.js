@@ -298,17 +298,23 @@ const userModel = {
 
     // Aquí empiezan las funciones de menú
     getUserInfo: (id_usuario) => {
-        //user info + direccion + ocupacion + plan
         return new Promise((resolve, reject) => {
-            const sql = `SELECT u.id_usuario, u.nombre1, u.nombre2, u.apellido1, u.apellido2, u.correo, u.telefono, u.fecha_nacimiento,
-                                d.pais, d.estado, d.ciudad, o.descripcion AS ocupacion, p.capacidad_total, p.max_no_directos, p.precio_mensual
-                         FROM usuarios u
-                         JOIN usuarios_direccion ud ON u.id_usuario = ud.id_usuario
-                         JOIN direcciones d ON ud.id_direccion = d.id_direccion
-                         JOIN usuarios_ocupacion uo ON u.id_usuario = uo.id_usuario
-                         JOIN ocupaciones o ON uo.id_ocupacion = o.id_ocupacion
-                         JOIN planes p ON u.plan_id = p.id
-                         WHERE u.id_usuario = ?`;
+            const sql = `
+                SELECT 
+                    u.id_usuario, u.nombre1, u.nombre2, u.apellido1, u.apellido2, u.correo, u.telefono, u.fecha_nacimiento,
+                    paises.nombre AS pais, estados.nombre AS estado, ciudades.nombre AS ciudad,
+                    o.descripcion AS ocupacion, p.capacidad_total, p.max_no_directos, p.precio_mensual
+                FROM usuarios u
+                JOIN usuarios_direccion ud ON u.id_usuario = ud.id_usuario
+                JOIN direcciones d ON ud.id_direccion = d.id_direccion
+                JOIN paises ON d.pais = paises.id_pais
+                JOIN estados ON d.estado = estados.id_estado
+                JOIN ciudades ON d.ciudad = ciudades.id_ciudad
+                JOIN usuarios_ocupacion uo ON u.id_usuario = uo.id_usuario
+                JOIN ocupaciones o ON uo.id_ocupacion = o.id_ocupacion
+                JOIN planes p ON u.plan_id = p.id
+                WHERE u.id_usuario = ?
+            `;
             db.get(sql, [id_usuario], (err, row) => {
                 if (err) return reject(err);
                 if (row) {
@@ -322,13 +328,23 @@ const userModel = {
     
     getFamilyMembers: (id_usuario) => {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT f.id_familiar, f.nombre1, f.nombre2, f.apellido1, f.apellido2, f.correo, f.telefono, p.descripcion AS parentesco, o.descripcion AS ocupacion
-                         FROM familiares f
-                         JOIN familiares_parentesco fp ON f.id_familiar = fp.id_familiar
-                         JOIN parentescos p ON fp.id_parentesco = p.id_parentesco
-                         JOIN familiares_ocupacion fo ON f.id_familiar = fo.id_familiar
-                         JOIN ocupaciones o ON fo.id_ocupacion = o.id_ocupacion
-                         WHERE f.id_usuario = ?`;
+            const sql = `
+                SELECT 
+                    f.id_familiar, f.nombre1, f.nombre2, f.apellido1, f.apellido2, f.correo, f.telefono, 
+                    p.descripcion AS parentesco, o.descripcion AS ocupacion,
+                    paises.nombre AS pais, estados.nombre AS estado, ciudades.nombre AS ciudad
+                FROM familiares f
+                JOIN familiares_parentesco fp ON f.id_familiar = fp.id_familiar
+                JOIN parentescos p ON fp.id_parentesco = p.id_parentesco
+                JOIN familiares_ocupacion fo ON f.id_familiar = fo.id_familiar
+                JOIN ocupaciones o ON fo.id_ocupacion = o.id_ocupacion
+                JOIN familiares_direccion fd ON f.id_familiar = fd.id_familiar
+                JOIN direcciones d ON fd.id_direccion = d.id_direccion
+                JOIN paises ON d.pais = paises.id_pais
+                JOIN estados ON d.estado = estados.id_estado
+                JOIN ciudades ON d.ciudad = ciudades.id_ciudad
+                WHERE f.id_usuario = ?
+            `;
             db.all(sql, [id_usuario], (err, rows) => {
                 if (err) return reject(err);
                 resolve(rows);
@@ -337,6 +353,23 @@ const userModel = {
     },
     updateUserInfo: (id_usuario, campo, valor) => {
         return new Promise((resolve, reject) => {
+            if(campo === 'direccion'){
+                const { pais, estado, ciudad } = valor;
+                verificarDireccion(pais, estado, ciudad)
+                    .then(id_direccion => {
+                        const sql = `UPDATE usuarios_direccion SET id_direccion = ? WHERE id_usuario = ?`;
+                        db.run(sql, [id_direccion, id_usuario], function(err) {
+                            if (err) return reject(err);
+                            if (this.changes > 0) {
+                                resolve({ message: 'Dirección actualizada exitosamente' });
+                            } else {
+                                reject(new Error('No se encontró el usuario o no se realizaron cambios'));
+                            }
+                        });
+                    })
+                    .catch(err => reject(err));
+                return;
+            }
             const sql = `UPDATE usuarios SET ${campo} = ? WHERE id_usuario = ?`;
             db.run(sql, [valor, id_usuario], function(err) {
                 if (err) return reject(err);
@@ -350,6 +383,23 @@ const userModel = {
     },
     updateFamilyMember: (id_familiar, campo, valor) => {
         return new Promise((resolve, reject) => {
+            if(campo === 'direccion'){
+            const { pais, estado, ciudad } = valor;
+            verificarDireccion(pais, estado, ciudad)
+                    .then(id_direccion => {
+                        const sql = `UPDATE usuarios_direccion SET id_direccion = ? WHERE id_usuario = ?`;
+                        db.run(sql, [id_direccion, id_usuario], function(err) {
+                            if (err) return reject(err);
+                            if (this.changes > 0) {
+                                resolve({ message: 'Dirección actualizada exitosamente' });
+                            } else {
+                                reject(new Error('No se encontró el usuario o no se realizaron cambios'));
+                            }
+                        });
+                    })
+                    .catch(err => reject(err));
+                return;    
+            }
             const sql = `UPDATE familiares SET ${campo} = ? WHERE id_familiar = ?`;
             db.run(sql, [valor, id_familiar], function(err) {
                 if (err) return reject(err);

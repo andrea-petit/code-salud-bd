@@ -14,27 +14,42 @@
         </div>
         <div class="bar-menu">
             <nav class="nav-menu">
-                <button>Actualizar Datos Personales</button>
-                <button>Ver Datos Familiares</button>
-                <button>Servicios Adicionales</button>
-                <button>Historial</button>
+                <button id="actualizar-button">Actualizar Datos Personales</button>
+                <button id="familia-button">Ver Datos Familiares</button>
+                <button id="servicios-button">Servicios Adicionales</button>
+                <button id="historial-button">Historial</button>
             </nav>
         </div>
     </header>
-    <div class="personal-container" style="display: block;">
+    <div id="personal-container" style="display: block;">
         <h1>Datos</h1>
     </div>
-    <div class="actualizar-datos-personales" style="display: none;">
+    <div id="actualizar-datos-personales" style="display: none;">
         <h1>Actualizar Datos Personales</h1>
+        <form id="personal-form">
+            <select name="campo" id="campo-personal">
+                <option value="nombre1">Primer Nombre</option>
+                <option value="nombre2">Segundo Nombre</option>
+                <option value="apellido1">Primer Apellido</option>
+                <option value="apellido2">Segundo Apellido</option>
+                <option value="correo">Correo Electrónico</option>
+                <option value="telefono">Teléfono</option>
+                <option value="direccion">Direccion</option>
+                <option value="fecha_nacimiento">Fecha de Nacimiento</option>
+            </select>
+            <button type="button" id="update-personal-button">Actualizar</button>
+
+        </form>
     </div>
-    <div class="ver-familiares" style="display: none;">
+    <div id="ver-familiares" style="display: none;">
         <h1>Ver Datos Familiares</h1>
     </div>
-    <div class="add-services" style="display: none;">
+    <div id="add-services" style="display: none;">
         <h1>Servicios Adicionales</h1>
     </div>
-    <div class="historial" style="display: none;">
+    <div id="historial" style="display: none;">
         <h1>Historial</h1>
     </div>
+    <script src="/js/index.js"></script>
 </body>
 </html>
