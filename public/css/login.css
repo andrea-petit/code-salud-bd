@@ -7,25 +7,30 @@ body.login-bg {
 }
 
 body {
+    position: relative;
     min-height: 100vh;
-    margin: 0 120px 0 0;
+    margin: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
     display: flex;
-    justify-content: right;
-    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
 }
 
 .login-container {
     background: #ffffff;
     padding: 2.5rem 2rem;
-    border-radius: 18px;
-    box-shadow: 0 8px 32px #4f504f;
+    border-radius: 38px;
+    box-shadow: 0 0px 20px 1px #2d2e43;
     width: 100%;
     max-width: 420px;
     margin: 2rem 0;
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex: 0 0 auto; 
+    align-self: flex-end; 
+    margin-right: 7.5vw;   
 }
 
 .login-container h1 {
@@ -123,10 +128,33 @@ button:hover {
     transform: translateY(-2px) scale(1.03);
 }
 
+footer {
+    width: 100%;
+    min-height: 38px;
+    margin-top: auto;
+    display: flex;
+    z-index: 2;
+    position: relative;
+    background-color: #2d317a;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    color: #fff;
+    font-size: 0.80rem;
+    text-align: center;
+    box-sizing: border-box;
+}
+
 @media (max-width: 500px) {
+    body.login-bg {
+        background-image: url("/img/fondo7.png");
+    }
+
     .login-container {
+        margin: auto;
+        border-radius: 0;
         padding: 1.2rem 0.5rem;
-        max-width: 98vw;
+        max-width: 80vw;
     }
     .logo-title img {
         width: 80px;
