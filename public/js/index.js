@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     updatePersonalButton.addEventListener('click', async function() {
-       if(campo === 'dirección'){
+        if(campo === 'dirección'){
             const pais = document.querySelector('input[name="pais"]').value;
             const estado = document.querySelector('input[name="estado"]').value;
             const ciudad = document.querySelector('input[name="ciudad"]').value;
