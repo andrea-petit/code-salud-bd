@@ -177,6 +177,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     };
                 });
             });
+
+            const deleteButtons = familyMembersDiv.querySelectorAll('.delete-family-member');
+            deleteButtons.forEach(button => {
+                button.onclick = async function() {
+                    const id_familiar = this.getAttribute('data-id');
+                    const seguro = confirm('¿Estás seguro de que deseas eliminar este familiar?');
+                    if (!seguro) return;
+
+                    const response = await fetch(`/api/users/deleteFamilyMember/${id_familiar}`, {
+                        method: 'POST'
+                    });
+
+                    if (response.ok) {
+                        alert('Familiar eliminado con éxito');
+                        await renderFamiliares(id_usuario);
+                    } else {
+                        alert('Error al eliminar el familiar.');
+                    }
+                };
+            });
         }else {
             const noFam = document.createElement('p');
             noFam.textContent = 'No se encontraron familiares.';
