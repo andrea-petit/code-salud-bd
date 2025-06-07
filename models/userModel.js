@@ -353,7 +353,7 @@ const userModel = {
     },
     updateUserInfo: (id_usuario, campo, valor) => {
         return new Promise((resolve, reject) => {
-            if(campo === 'direccion'){
+            if (campo === 'direccion') {
                 const { pais, estado, ciudad } = valor;
                 verificarDireccion(pais, estado, ciudad)
                     .then(id_direccion => {
@@ -362,6 +362,23 @@ const userModel = {
                             if (err) return reject(err);
                             if (this.changes > 0) {
                                 resolve({ message: 'Dirección actualizada exitosamente' });
+                            } else {
+                                reject(new Error('No se encontró el usuario o no se realizaron cambios'));
+                            }
+                        });
+                    })
+                    .catch(err => reject(err));
+                return;
+            }
+            if (campo === 'ocupacion') {
+                
+                getOcupacionIdByNombre(valor)
+                    .then(id_ocupacion => {
+                        const sql = `UPDATE usuarios_ocupacion SET id_ocupacion = ? WHERE id_usuario = ?`;
+                        db.run(sql, [id_ocupacion, id_usuario], function(err) {
+                            if (err) return reject(err);
+                            if (this.changes > 0) {
+                                resolve({ message: 'Ocupación actualizada exitosamente' });
                             } else {
                                 reject(new Error('No se encontró el usuario o no se realizaron cambios'));
                             }
