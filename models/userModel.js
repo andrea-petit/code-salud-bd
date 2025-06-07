@@ -404,8 +404,8 @@ const userModel = {
             const { pais, estado, ciudad } = valor;
             verificarDireccion(pais, estado, ciudad)
                     .then(id_direccion => {
-                        const sql = `UPDATE usuarios_direccion SET id_direccion = ? WHERE id_usuario = ?`;
-                        db.run(sql, [id_direccion, id_usuario], function(err) {
+                        const sql = `UPDATE familiares_direccion SET id_direccion = ? WHERE id_familiar = ?`;
+                        db.run(sql, [id_direccion, id_familiar], function(err) {
                             if (err) return reject(err);
                             if (this.changes > 0) {
                                 resolve({ message: 'Dirección actualizada exitosamente' });
@@ -416,6 +416,23 @@ const userModel = {
                     })
                     .catch(err => reject(err));
                 return;    
+            }
+            if (campo === 'id_ocupacion') {
+                
+                getOcupacionIdByNombre(valor)
+                    .then(id_ocupacion => {
+                        const sql = `UPDATE familiares_ocupacion SET id_ocupacion = ? WHERE id_familiar = ?`;
+                        db.run(sql, [id_ocupacion, id_familiar], function(err) {
+                            if (err) return reject(err);
+                            if (this.changes > 0) {
+                                resolve({ message: 'Ocupación actualizada exitosamente' });
+                            } else {
+                                reject(new Error('No se encontró el usuario o no se realizaron cambios'));
+                            }
+                        });
+                    })
+                    .catch(err => reject(err));
+                return;
             }
             const sql = `UPDATE familiares SET ${campo} = ? WHERE id_familiar = ?`;
             db.run(sql, [valor, id_familiar], function(err) {
