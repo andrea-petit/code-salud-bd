@@ -133,7 +133,7 @@ async registerUser(req, res) {
     },
     async getUserInfo(req, res) {
         try {
-            const { id_usuario } = req.params;
+            const id_usuario = req.session.user.id_usuario;
 
             const userInfo = await userModel.getUserInfo(id_usuario);
 
@@ -149,7 +149,7 @@ async registerUser(req, res) {
     },
     async getFamilyMembers(req, res){
         try {
-            const { id_usuario } = req.params;
+            const id_usuario = req.session.user.id_usuario;
 
             const familyMembers = await userModel.getFamilyMembers(id_usuario);
 
@@ -165,7 +165,7 @@ async registerUser(req, res) {
     },
     async updateUserInfo(req, res) {
         try {
-            const { id_usuario } = req.params;
+            const id_usuario = req.session.user.id_usuario;
             const{campo, valor}= req.body;
 
             const updatedUser = await userModel.updateUserInfo(id_usuario, campo, valor);
@@ -252,7 +252,8 @@ async registerUser(req, res) {
             console.error('Error al obtener el historial de pagos:', error);
             res.status(500).json({ message: 'Error al obtener el historial de pagos', error: error.message });
         }
-    }
+    },
+    
 
 }
 

@@ -36,6 +36,8 @@ app.get("/home", autenticacion, (req, res) => {
   res.sendFile(path.join(__dirname, "views", "index.html"));
 })
 
+
+
 app.listen(3000, () => {
   console.log("Servidor corriendo en http://localhost:3000");
 });

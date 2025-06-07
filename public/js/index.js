@@ -12,40 +12,50 @@ document.addEventListener('DOMContentLoaded', function() {
     const historial= document.getElementById('historial');
 
 
+    
     async function fetchPersonalData() {
         try{
-            
             const response = await fetch('api/users/UserInfo');
             if (!response.ok){
                 throw new Error('Error al obtener los datos personales');
                 console.error('Error al obtener los datos personales');
             }
+            const data = await response.json();
+            if (data && data.userInfo) {
+                return data;
+            } else {
+                console.error('No se encontraron datos personales');
+                return null;
+            }
         }catch (error) {
             console.error('Error:', error);
-            return;
+            return null;
         }
     }
 
     personalData = fetchPersonalData();
     personalData.then(data => {
-        if (data) {
+        if (data && data.userInfo) {
+            const info = data.userInfo;
             personalDiv.innerHTML = `
                 <h2>Datos Personales</h2>
-                <p>Nombre: ${data.nombre}</p>
-                <p>Apellido: ${data.apellido}</p>
-                <p>Email: ${data.email}</p>
-                <p>Teléfono: ${data.telefono}</p>
-                <p>Fecha de Nacimiento: ${data.fecha_nacimiento}</p>
-                <p>Ocupación: ${data.ocupacion}</p>
-                <p>Dirección: ${data.pais}, ${data.estado}, ${data.ciudad} </p>
-                <p>Plan: ${data.plan}</p>
+                <p>Nombre: ${info.nombre1} ${info.nombre2}</p>
+                <p>Apellido: ${info.apellido1} ${info.apellido2}</p>
+                <p>Email: ${info.correo}</p>
+                <p>Teléfono: ${info.telefono}</p>
+                <p>Fecha de Nacimiento: ${info.fecha_nacimiento}</p>
+                <p>Ocupación: ${info.ocupacion}</p>
+                <p>Dirección: ${info.pais}, ${info.estado}, ${info.ciudad}</p>
+                <p>Plan: Capacidad ${info.capacidad_total}, No Directos ${info.max_no_directos}, Precio $${info.precio_mensual}</p>
             `;
+            personalContainer.appendChild(personalDiv);
+
         } else {
-            personalContainer.innerHTML = '<p>No se encontraron datos personales.</p>';
+            personalContainer.innerHTML = '<p>No se encontraron datos personales lll</p>';
         }
     });
 
-    personalContainer.appendChild(personalDiv);
+    
 
     const personalButton = document.getElementById('actualizar-button');
     personalButton.addEventListener('click', function() {
