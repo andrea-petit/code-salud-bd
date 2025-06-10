@@ -227,7 +227,7 @@ async registerUser(req, res) {
     },
     async payPendiente(req, res){
         try {
-            const { id_usuario } = req.session.user.id_usuario;
+            const { id_usuario } = req.params;
 
             const payment = await userModel.PayPendiente(id_usuario);
 
@@ -247,6 +247,22 @@ async registerUser(req, res) {
         } catch (error) {
             console.error('Error al obtener el historial de pagos:', error);
             res.status(500).json({ message: 'Error al obtener el historial de pagos', error: error.message });
+        }
+    },
+    async getPaymentPendiente(req, res) {
+        try {
+            const { id_usuario } = req.params;
+
+            const paymentPendiente = await userModel.getPaymentPendiente(id_usuario);
+
+            if (!paymentPendiente) {
+                return res.status(404).json({ message: 'Pago pendiente no encontrado' });
+            }
+
+            res.status(200).json({ message: 'Pago pendiente obtenido con éxito', paymentPendiente });
+        } catch (error) {
+            console.error('Error al obtener el pago pendiente:', error);
+            res.status(500).json({ message: 'Error al obtener el pago pendiente', error: error.message });
         }
     },
     

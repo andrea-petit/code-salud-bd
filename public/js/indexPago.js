@@ -24,6 +24,77 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     await getIdUsuario();
 
+    pagoButton.addEventListener('click', function() {
+        personalContainer.style.display = 'none';
+        actualizarDatosContainer.style.display = 'none';
+        verFamiliaresContainer.style.display = 'none';
+        pagosContainer.style.display = 'block';
+        reporte.style.display = 'none';
+    });
     
+    async function mostrarPagoPendiente() {
+        try {
+            const response = await fetch(`/api/users/getPaymentPendiente/${window.id_usuario}`);
+            const data = await response.json();
+            const infoDiv = document.getElementById('pago-pendiente-info');
+            if (data && data.paymentPendiente && data.paymentPendiente.estado === 'pendiente') {
+                const pago = data.paymentPendiente;
+                infoDiv.innerHTML = `
+                    <div>
+                        <strong>Periodo:</strong> ${pago.periodo || '-'}<br>
+                        <strong>Monto:</strong> $${pago.monto}<br>
+                        <strong>Estado:</strong> ${pago.estado}
+                    </div>
+                `;
+                document.getElementById('submit-payment').dataset.idPago = pago.id;
+                document.getElementById('submit-payment').disabled = false;
+            } else {
+                infoDiv.innerHTML = '<p>No tienes pagos pendientes.</p>';
+                document.getElementById('submit-payment').disabled = true;
+            }
+        } catch (error) {
+            console.error('Error mostrando pago pendiente:', error);
+        }
+    }
 
+    const volverBtn = document.createElement('button');
+    volverBtn.textContent = 'Volver';
+    volverBtn.type = 'button';
+    volverBtn.id = 'volver-btn';
+    volverBtn.style.marginTop = '20px';
+    volverBtn.addEventListener('click', function() {
+        actualizarDatosContainer.style.display = 'none';
+        verFamiliaresContainer.style.display = 'none';
+        pagosContainer.style.display = 'none';
+        reporte.style.display = 'none';
+        personalContainer.style.display = 'block';
+    });
+    document.getElementById('payment-form').after(volverBtn);
+
+    await mostrarPagoPendiente();
+
+    document.getElementById('submit-payment').addEventListener('click', async function() {
+        const idPago = this.dataset.idPago;
+        if (!idPago) {
+            alert('No hay pago pendiente seleccionado.');
+            return;
+        }
+        try {
+            const response = await fetch(`/api/users/payPendiente/${idPago}`, { method: 'POST' });
+            const result = await response.json();
+            if (response.ok) {
+                alert('¡Pago realizado con éxito!');
+                await mostrarPagoPendiente(); 
+                actualizarDatosContainer.style.display = 'none';
+                verFamiliaresContainer.style.display = 'none';
+                pagosContainer.style.display = 'none';
+                reporte.style.display = 'none';
+                personalContainer.style.display = 'block';
+            } else {
+                alert(result.message || 'Error al realizar el pago.');
+            }
+        } catch (error) {
+            alert('Error al conectar con el servidor.');
+        }
+    });
 });

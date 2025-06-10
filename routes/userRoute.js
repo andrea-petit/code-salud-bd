@@ -21,6 +21,7 @@ router.post('/deleteFamilyMember/:id_familiar', userController.deleteFamilyMembe
 router.post('/makePaymentPendiente/:id_usuario', userController.makePaymentPendiente);
 router.post('/payPendiente/:id_usuario', userController.payPendiente);
 router.get('/getPaymentHistory/:id_usuario', userController.getPaymentHistory);
+router.get('/getPaymentPendiente/:id_usuario', userController.getPaymentPendiente);
 
 
 

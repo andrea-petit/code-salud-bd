@@ -508,14 +508,14 @@ const userModel = {
         });
     },
 
-    PayPendiente: (id_pago) => {
+    PayPendiente: (id) => {
         return new Promise((resolve, reject) => {
-            const sql = `UPDATE pagos SET estado = ?, fecha = datetime('now') WHERE id_pago = ?`;
-            db.run(sql, ["pagado", id_pago], function(err) {
+            const sql = `UPDATE pagos SET estado = ?, fecha = datetime('now') WHERE id = ?`;
+            db.run(sql, ["pagado", id], function(err) {
                 if (err) return reject(err);
                 if (this.changes > 0) {
-                    const getUserSql = `SELECT id_usuario FROM pagos WHERE id_pago = ?`;
-                    db.get(getUserSql, [id_pago], (err, row) => {
+                    const getUserSql = `SELECT id_usuario FROM pagos WHERE id = ?`;
+                    db.get(getUserSql, [id], (err, row) => {
                         if (err) return reject(err);
                         if (row && row.id_usuario) {
                             userModel.makePaymentPendiente(row.id_usuario)
@@ -539,6 +539,19 @@ const userModel = {
             db.all(sql, [id_usuario], (err, rows) => {
                 if (err) return reject(err);
                 resolve(rows);
+            });
+        });
+    },
+    getPaymentPendiente: (id_usuario) => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT * FROM pagos WHERE id_usuario = ? AND estado = 'pendiente' ORDER BY fecha DESC LIMIT 1`;
+            db.get(sql, [id_usuario], (err, row) => {
+                if (err) return reject(err);
+                if (row) {
+                    resolve(row);
+                } else {
+                    reject(new Error('No se encontró un pago pendiente para el usuario'));
+                }
             });
         });
     }

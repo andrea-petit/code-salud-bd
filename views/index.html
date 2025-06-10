@@ -46,7 +46,17 @@
         <div id="family-members"></div>
     </div>
     <div id="pagos-container" style="display: none;">
-        <h1>Servicios Adicionales</h1>
+        <div id="pago-pendiente-info"></div>
+        <form id="payment-form">
+            <div id="plan-info"></div>
+            <select name="payment-type" id="payment-type">
+                <option value="credit-card">Tarjeta de Crédito</option>
+                <option value="debit-card">Tarjeta de Débito</option>
+                <option value="paypal">PayPal</option>
+            </select>
+            <input type="number" name="cardNumber" placeholder="Número de Tarjeta" min="0" minlength="13" maxlength="19" required>
+            <button id="submit-payment" type="button">Pagar</button>
+        </form>
     </div>
     <div id="reporte" style="display: none;">
         <h1>Historial</h1>
@@ -58,5 +68,6 @@
     <script src="/js/indexPersonal.js"></script>
     <script src="/js/indexFamiliar.js"></script>
     <script src="/js/indexReporte.js"></script>
+    <script src="/js/indexPago.js"></script>
 </body>
 </html>
