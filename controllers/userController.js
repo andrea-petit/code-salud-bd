@@ -215,7 +215,7 @@ async registerUser(req, res) {
     },
     async makePaymentPendiente(req, res){
         try {
-            const { id_usuario } = req.params;
+            const { id_usuario } = req.session.user.id_usuario;
 
             const payment = await userModel.makePayPendiente(id_usuario);
 
@@ -227,7 +227,7 @@ async registerUser(req, res) {
     },
     async payPendiente(req, res){
         try {
-            const { id_usuario } = req.params;
+            const { id_usuario } = req.session.user.id_usuario;
 
             const payment = await userModel.PayPendiente(id_usuario);
 
@@ -240,12 +240,8 @@ async registerUser(req, res) {
     async getPaymentHistory(req, res){
         try {
             const { id_usuario } = req.params;
-
+        console.log('id_usuario recibido:', id_usuario); 
             const paymentHistory = await userModel.getPaymentHistory(id_usuario);
-
-            if (!paymentHistory || paymentHistory.length === 0) {
-                return res.status(404).json({ message: 'No se encontraron pagos' });
-            }
 
             res.status(200).json({ message: 'Historial de pagos obtenido con éxito', paymentHistory });
         } catch (error) {

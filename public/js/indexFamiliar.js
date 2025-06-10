@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const personalContainer = document.getElementById('personal-container');
     const actualizarDatosContainer = document.getElementById('actualizar-datos-personales');
     const verFamiliaresContainer = document.getElementById('ver-familiares');
-    const addServicesContainer = document.getElementById('add-services');
-    const historial = document.getElementById('historial');
+    const pagosContainer = document.getElementById('pagos-container');
+    const reporte = document.getElementById('reporte');
     const verFamiliaresButton = document.getElementById('familia-button');
 
     let id_usuario = window.id_usuario || null;
@@ -207,10 +207,10 @@ document.addEventListener('DOMContentLoaded', function() {
     verFamiliaresButton.addEventListener('click', async function(e) {
         e.preventDefault();
         actualizarDatosContainer.style.display = 'none';
-        verFamiliaresContainer.style.display = 'block';
-        addServicesContainer.style.display = 'none';
-        historial.style.display = 'none';
+        pagosContainer.style.display = 'none';
+        reporte.style.display = 'none';
         personalContainer.style.display = 'none';
+        verFamiliaresContainer.style.display = 'block';
         await renderFamiliares(id_usuario);
     });
 

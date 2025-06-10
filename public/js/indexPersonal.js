@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const actualizarDatosContainer= document.getElementById('actualizar-datos-personales');
     const updatePersonalButton = document.getElementById('update-personal-button');
     const verFamiliaresContainer = document.getElementById('ver-familiares');
-    const addServicesContainer = document.getElementById('add-services');
-    const historial= document.getElementById('historial');
+    const pagosContainer = document.getElementById('pagos-container');
+    const reporte= document.getElementById('reporte');
 
 
     
@@ -62,8 +62,8 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         actualizarDatosContainer.style.display = 'block';
         verFamiliaresContainer.style.display = 'none';
-        addServicesContainer.style.display = 'none';
-        historial.style.display = 'none';
+        pagosContainer.style.display = 'none';
+        reporte.style.display = 'none';
         personalContainer.style.display = 'none';
 
         const form = document.getElementById('personal-form');
@@ -79,6 +79,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         volverBtn.addEventListener('click', function() {
             actualizarDatosContainer.style.display = 'none';
+            verFamiliaresContainer.style.display = 'none';
+            pagosContainer.style.display = 'none';
+            reporte.style.display = 'none';
             personalContainer.style.display = 'block';
         });
 
@@ -205,7 +208,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     form.removeChild(form.firstChild);
                 }
                 actualizarDatosContainer.style.display = 'none';
+                verFamiliaresContainer.style.display = 'none';
+                pagosContainer.style.display = 'none';
+                reporte.style.display = 'none';
                 personalContainer.style.display = 'block';
+
 
                 const dataPersonal = await fetchPersonalData();
                 if (dataPersonal && dataPersonal.userInfo) {
