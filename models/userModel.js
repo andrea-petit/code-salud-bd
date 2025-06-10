@@ -198,13 +198,24 @@ const userModel = {
         return new Promise((resolve, reject) => {
             userModel.getUserPlan(id_usuario)
                 .then(plan => {
-                    const sql = `INSERT INTO pagos (id_usuario, monto, fecha, estado) VALUES (?, ?, datetime('now'), ?)`;
-                    db.run(sql, [id_usuario, plan.precio_mensual, "pagado"], function(err) {
+                    const now = new Date();
+                    const periodo = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+                    const sql = `INSERT INTO pagos (id_usuario, monto, fecha, estado, descripcion, periodo) VALUES (?, ?, datetime('now'), ?, ?, ?)`;
+                    db.run(sql, [id_usuario, plan.precio_mensual, "pagado", "Afiliación", periodo], function(err) {
                         if (err) return reject(err);
-                        resolve({message: 'Pago realizado exitosamente', paymentId: this.lastID});
-                    });
-                })
-                .catch(err => reject(err));
+                        
+                        userModel.makePaymentPendiente(id_usuario)
+                            .then(result => {
+                                resolve({
+                                    message: 'Pago de afiliación realizado y pago pendiente generado',
+                                    paymentId: this.lastID,
+                                    pendiente: result
+                            });
+                        })
+                        .catch(err => reject(err));
+                });
+            })
+            .catch(err => reject(err));
         });
     },
 
@@ -462,10 +473,35 @@ const userModel = {
         return new Promise((resolve, reject) => {
             userModel.getUserPlan(id_usuario)
                 .then(plan => {
-                    const sql = `INSERT INTO pagos (id_usuario, monto, fecha, estado) VALUES (?, ?, datetime('now'), ?)`;
-                    db.run(sql, [id_usuario, plan.precio_mensual, "pendiente"], function(err) {
+                    const sqlUltimo = `SELECT periodo FROM pagos WHERE id_usuario = ? ORDER BY periodo DESC LIMIT 1`;
+                    db.get(sqlUltimo, [id_usuario], (err, row) => {
                         if (err) return reject(err);
-                        resolve({message: 'Pago pendiente registrado exitosamente', paymentId: this.lastID});
+
+                        let nextYear, nextMonth;
+                        if (row && row.periodo) {
+                            const [year, month] = row.periodo.split('-').map(Number);
+                            nextMonth = month + 1;
+                            nextYear = year;
+                            if (nextMonth > 12) {
+                                nextMonth = 1;
+                                nextYear += 1;
+                            }
+                        } else {
+                            const now = new Date();
+                            nextMonth = now.getMonth() + 2;
+                            nextYear = now.getFullYear();
+                            if (nextMonth > 12) {
+                                nextMonth = 1;
+                                nextYear += 1;
+                            }
+                        }
+                        const periodo = `${nextYear}-${String(nextMonth).padStart(2, '0')}`;
+
+                        const sql = `INSERT INTO pagos (id_usuario, monto, fecha, estado, descripcion, periodo) VALUES (?, ?, datetime('now'), ?, ?, ?)`;
+                        db.run(sql, [id_usuario, plan.precio_mensual, "pendiente", "Mensualidad", periodo], function(err) {
+                            if (err) return reject(err);
+                            resolve({message: 'Pago pendiente registrado exitosamente', paymentId: this.lastID, periodo});
+                        });
                     });
                 })
                 .catch(err => reject(err));
@@ -474,11 +510,23 @@ const userModel = {
 
     PayPendiente: (id_pago) => {
         return new Promise((resolve, reject) => {
-            const sql = `UPDATE pagos SET estado = ? WHERE id_pago = ?`;
+            const sql = `UPDATE pagos SET estado = ?, fecha = datetime('now') WHERE id_pago = ?`;
             db.run(sql, ["pagado", id_pago], function(err) {
                 if (err) return reject(err);
                 if (this.changes > 0) {
-                    resolve({ message: 'Pago marcado como pagado exitosamente' });
+                    const getUserSql = `SELECT id_usuario FROM pagos WHERE id_pago = ?`;
+                    db.get(getUserSql, [id_pago], (err, row) => {
+                        if (err) return reject(err);
+                        if (row && row.id_usuario) {
+                            userModel.makePaymentPendiente(row.id_usuario)
+                                .then(result => {
+                                    resolve({ message: 'Pago marcado como pagado exitosamente y nuevo pago pendiente generado', pendiente: result });
+                            })
+                            .catch(err => reject(err));
+                        } else {
+                            resolve({ message: 'Pago marcado como pagado exitosamente, pero no se pudo generar el siguiente pago pendiente (usuario no encontrado)' });
+                        }
+                    });
                 } else {
                     reject(new Error('No se encontró el pago o no se realizaron cambios'));
                 }

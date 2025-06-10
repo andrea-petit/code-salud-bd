@@ -6,9 +6,9 @@ const db = new sqlite3.Database(dbPath, (err) => {
     console.error('Error conectando a la BD:', err.message);
   } else {
     console.log('Conectado con exito a la BD de CODE-SALUD');
+    db.run('PRAGMA foreign_keys = ON;'); 
   }
 });
-
 
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS ocupaciones (
@@ -56,7 +56,6 @@ db.serialize(() => {
         apellido2 TEXT NOT NULL,
         correo TEXT UNIQUE,
         telefono TEXT,
-
         FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
     );`);
 
@@ -105,40 +104,11 @@ db.serialize(() => {
     ('PREMIUM', 11, 5, 6000),
     ('GOLD', 17, 10, 7500);`);
 
-    db.run(`CREATE TABLE IF NOT EXISTS servicios (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nombre TEXT NOT NULL UNIQUE,
-        tipo TEXT CHECK (tipo IN ('incluido', 'adicional')) NOT NULL,
-        precio_base REAL DEFAULT 0
-    );`);
-
-    db.run(`INSERT OR IGNORE INTO servicios (nombre, tipo, precio_base) VALUES
-    ('Consulta médica general', 'incluido', 0),
-    ('Odontología básica', 'incluido', 0),
-    ('Laboratorio clínico', 'adicional', 150.00),
-    ('Psicología', 'adicional', 300.00),
-    ('Oftalmología', 'adicional', 300.00);`);
-
-    db.run(`CREATE TABLE IF NOT EXISTS planes_servicios (
-        id_plan_servicio INTEGER PRIMARY KEY AUTOINCREMENT,
-        plan_id INTEGER NOT NULL ,
-        servicio_id INTEGER NOT NULL,
-        FOREIGN KEY (plan_id) REFERENCES planes(id),
-        FOREIGN KEY (servicio_id) REFERENCES servicios(id)
-    );`);
-
-    db.run(`INSERT OR IGNORE INTO planes_servicios (plan_id, servicio_id) VALUES
-    (1, 1), (1, 2), 
-    (2, 1), (2, 2),
-    (3, 1), (3, 2), (3, 3),
-    (4, 1), (4, 2), (4, 3),
-    (5, 1), (5, 2), (5, 3);`);
-
     db.run(`CREATE TABLE IF NOT EXISTS familiares_ocupacion (
         id_familiar_ocupacion INTEGER PRIMARY KEY AUTOINCREMENT,
         id_familiar INTEGER NOT NULL,
         id_ocupacion INTEGER NOT NULL,
-        FOREIGN KEY (id_familiar) REFERENCES familiares(id_familiar),
+        FOREIGN KEY (id_familiar) REFERENCES familiares(id_familiar) ON DELETE CASCADE,
         FOREIGN KEY (id_ocupacion) REFERENCES ocupaciones(id_ocupacion)
     );`);
 
@@ -146,7 +116,7 @@ db.serialize(() => {
         id_familiar_direccion INTEGER PRIMARY KEY AUTOINCREMENT,
         id_familiar INTEGER NOT NULL,
         id_direccion INTEGER NOT NULL,
-        FOREIGN KEY (id_familiar) REFERENCES familiares(id_familiar),
+        FOREIGN KEY (id_familiar) REFERENCES familiares(id_familiar) ON DELETE CASCADE,
         FOREIGN KEY (id_direccion) REFERENCES direcciones(id_direccion)
     );`);
 
@@ -154,7 +124,7 @@ db.serialize(() => {
         id_familiar_parentesco INTEGER PRIMARY KEY AUTOINCREMENT,
         id_familiar INTEGER NOT NULL,
         id_parentesco INTEGER NOT NULL,
-        FOREIGN KEY (id_familiar) REFERENCES familiares(id_familiar),
+        FOREIGN KEY (id_familiar) REFERENCES familiares(id_familiar) ON DELETE CASCADE,
         FOREIGN KEY (id_parentesco) REFERENCES parentescos(id_parentesco)
     );`);
 
@@ -186,10 +156,10 @@ db.serialize(() => {
         monto REAL NOT NULL,
         fecha TEXT NOT NULL,
         estado TEXT CHECK (estado IN ('pagado', 'pendiente')) DEFAULT 'pendiente' NOT NULL,
+        descripcion TEXT,
+        periodo TEXT,
         FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
     );`);
-
-
 });
 
 module.exports = db;

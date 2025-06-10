@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (data && data.userInfo) {
                 const info = data.userInfo;
                 reporteDiv.innerHTML += `
-                    <h2>Reporte Personal</h2>
+                    <h2>Datos Personales</h2>
                     <p>Nombres: ${info.nombre1} ${info.nombre2}</p>
                     <p>Apellidos: ${info.apellido1} ${info.apellido2}</p>
                     <p>Email: ${info.correo}</p>
@@ -149,14 +149,22 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         
         historialData.then(data => {
-            if (data && data.paymentHistory && data.paymentHistory.length > 0) {
+            if (data && Array.isArray(data.paymentHistory) && data.paymentHistory.length > 0) {
                 const historialDiv = document.createElement('div');
                 historialDiv.id = 'historialData';
                 historialDiv.className = 'historial-data';
                 historialDiv.innerHTML = '<h2>Historial de Pagos</h2>';
                 data.paymentHistory.forEach(pago => {
                     historialDiv.innerHTML += `
-                        <p>Fecha: ${pago.fecha}, Monto: $${pago.monto}, Estado: ${pago.estado}</p>
+                        <div class="pago-item">
+                            <strong>Periodo:</strong> ${pago.periodo || '-'}<br>
+                            <strong>Descripción:</strong> ${pago.descripcion || '-'}<br>
+                            ${pago.estado === "pagado" ? `<strong>Fecha:</strong> ${pago.fecha}<br>` : ""}
+                            <strong>Monto:</strong> $${pago.monto}<br>
+                            <strong>Estado:</strong> ${pago.estado}
+                            <br>
+                        </div>
+                        <hr>
                     `;
                 });
                 reporteDiv.appendChild(historialDiv);
