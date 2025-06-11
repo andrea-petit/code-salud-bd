@@ -70,8 +70,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                 card.innerHTML = `
                     <p><strong>Cédula:</strong> ${member.id_familiar}</p>
-                    <p><strong>Nombre:</strong> ${member.nombre1} ${member.nombre2}</p>
-                    <p><strong>Apellido:</strong> ${member.apellido1} ${member.apellido2}</p>
+                    <p><strong>Nombres:</strong> ${member.nombre1} ${member.nombre2}</p>
+                    <p><strong>Apellidos:</strong> ${member.apellido1} ${member.apellido2}</p>
                     <p><strong>Correo:</strong> ${member.correo || '-'}</p>
                     <p><strong>Teléfono:</strong> ${member.telefono || '-'}</p>
                     <p><strong>Parentesco:</strong> ${member.parentesco}</p>
@@ -84,7 +84,19 @@ document.addEventListener('DOMContentLoaded', async function() {
                 `;
                 familyMembersDiv.appendChild(card);
             });
+        const volverBtn = document.createElement('button');
+        volverBtn.textContent = 'Volver';
+        volverBtn.style.marginBottom = '20px';
+        volverBtn.onclick = function() {
+            verFamiliaresContainer.style.display = 'none';
+            personalContainer.style.display = 'block';
+        };
+        familyMembersDiv.appendChild(volverBtn);
 
+        const addFamBtn = document.createElement('button');
+        addFamBtn.textContent = 'Añadir familiar';
+        addFamBtn.style.margin = '0 0 20px 10px';
+        familyMembersDiv.appendChild(addFamBtn);
             
             const updateButtons = document.querySelectorAll('.update-family-member');
             updateButtons.forEach(button => {

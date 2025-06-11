@@ -38,15 +38,17 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data && data.userInfo) {
             const info = data.userInfo;
             personalDiv.innerHTML = `
-                <h2>Datos Personales</h2>
-                <p>Nombres: ${info.nombre1} ${info.nombre2}</p>
-                <p>Apellidos: ${info.apellido1} ${info.apellido2}</p>
-                <p>Email: ${info.correo}</p>
-                <p>Teléfono: ${info.telefono}</p>
-                <p>Fecha de Nacimiento: ${info.fecha_nacimiento}</p>
-                <p>Ocupación: ${info.ocupacion}</p>
-                <p>Dirección: ${info.pais}, ${info.estado}, ${info.ciudad}</p>
-                <p>Plan: Capacidad ${info.capacidad_total}, No Directos ${info.max_no_directos}, Precio $${info.precio_mensual}</p>
+                <h2>Datos Personales</h2><hr>
+                <div>
+                <p><strong>Nombres:</strong> ${info.nombre1} ${info.nombre2}</p>
+                <p><strong>Apellidos:</strong> ${info.apellido1} ${info.apellido2}</p>
+                <p><strong>Email:</strong> ${info.correo}</p>
+                <p><strong>Teléfono:</strong> ${info.telefono}</p>
+                <p><strong>Fecha de Nacimiento:</strong> ${info.fecha_nacimiento}</p>
+                <p><strong>Ocupación:</strong> ${info.ocupacion}</p>
+                <p><strong>Dirección:</strong> ${info.pais}, ${info.estado}, ${info.ciudad}</p>
+                <p><strong>Plan:</strong> Capacidad ${info.capacidad_total}, No Directos ${info.max_no_directos}, Precio $${info.precio_mensual}</p>
+                </div>
             `;
             personalContainer.appendChild(personalDiv);
 
@@ -71,20 +73,6 @@ document.addEventListener('DOMContentLoaded', function() {
             form.removeChild(form.firstChild);
         }
 
-        const volverBtn = document.createElement('button');
-        volverBtn.type = 'button';
-        volverBtn.textContent = 'Volver';
-        volverBtn.style.marginRight = '10px';
-        form.appendChild(volverBtn);
-
-        volverBtn.addEventListener('click', function() {
-            actualizarDatosContainer.style.display = 'none';
-            verFamiliaresContainer.style.display = 'none';
-            pagosContainer.style.display = 'none';
-            reporte.style.display = 'none';
-            personalContainer.style.display = 'block';
-        });
-
 
         const select = document.createElement('select');
         select.name = 'valor';
@@ -107,7 +95,21 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.textContent = 'Actualizar';
         form.appendChild(submitBtn);
 
-        
+        const volverBtn = document.createElement('button');
+        volverBtn.type = 'button';
+        volverBtn.textContent = 'Volver';
+        volverBtn.style.marginRight = '10px';
+        form.appendChild(volverBtn);
+
+        volverBtn.addEventListener('click', function() {
+            actualizarDatosContainer.style.display = 'none';
+            verFamiliaresContainer.style.display = 'none';
+            pagosContainer.style.display = 'none';
+            reporte.style.display = 'none';
+            personalContainer.style.display = 'block';
+        });
+
+
         let ocupacionesList = [];
         async function cargarOcupaciones() {
             if (ocupacionesList.length === 0) {
@@ -218,15 +220,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (dataPersonal && dataPersonal.userInfo) {
                     const info = dataPersonal.userInfo;
                     personalDiv.innerHTML = `
-                        <h2>Datos Personales</h2>
-                        <p>Nombres: ${info.nombre1} ${info.nombre2}</p>
-                        <p>Apellidos: ${info.apellido1} ${info.apellido2}</p>
-                        <p>Email: ${info.correo}</p>
-                        <p>Teléfono: ${info.telefono}</p>
-                        <p>Fecha de Nacimiento: ${info.fecha_nacimiento}</p>
-                        <p>Ocupación: ${info.ocupacion}</p>
-                        <p>Dirección: ${info.pais}, ${info.estado}, ${info.ciudad}</p>
-                        <p>Plan: Capacidad ${info.capacidad_total}, No Directos ${info.max_no_directos}, Precio $${info.precio_mensual}</p>
+                        <h2>Datos Personales</h2><hr>
+                        <p><strong>Nombres:</strong> ${info.nombre1} ${info.nombre2}</p>
+                        <p><strong>Apellidos:</strong> ${info.apellido1} ${info.apellido2}</p>
+                        <p><strong>Email:</strong> ${info.correo}</p>
+                        <p><strong>Teléfono:</strong> ${info.telefono}</p>
+                        <p><strong>Fecha de Nacimiento:</strong> ${info.fecha_nacimiento}</p>
+                        <p><strong>Ocupación:</strong> ${info.ocupacion}</p>
+                        <p><strong>Dirección:</strong> ${info.pais}, ${info.estado}, ${info.ciudad}</p>
+                        <p><strong>Plan:</strong> Capacidad ${info.capacidad_total}, No Directos ${info.max_no_directos}, Precio $${info.precio_mensual}</p>
                     `;
                 }
             } else {
