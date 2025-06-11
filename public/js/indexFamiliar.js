@@ -30,6 +30,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     const familyMembersDiv = document.getElementById('family-members');
 
     async function renderFamiliares(id_usuario) {
+
+        const formEditar = document.getElementById('update-family-form');
+        if (formEditar) formEditar.remove();
+
         while (familyMembersDiv.firstChild) {
             familyMembersDiv.removeChild(familyMembersDiv.firstChild);
         }
@@ -87,8 +91,31 @@ document.addEventListener('DOMContentLoaded', async function() {
                 button.addEventListener('click', async function() {
                     const id_familiar = this.getAttribute('data-id');
 
-                    const prevForm = document.getElementById('update-family-form');
-                    if (prevForm) prevForm.remove();
+                    const response = await fetch(`/api/users/familyMembers/${id_usuario}`);
+                    const data = await response.json();
+                    const familiar = data.familyMembers.find(f => f.id_familiar == id_familiar);
+
+                    familyMembersDiv.innerHTML = '';
+
+                    const card = document.createElement('div');
+                    card.className = 'family-card';
+                    card.style.border = '1px solid #ccc';
+                    card.style.borderRadius = '8px';
+                    card.style.padding = '16px';
+                    card.style.margin = '16px 0';
+                    card.style.boxShadow = '0 2px 8px rgba(0,0,0,0.07)';
+                    card.style.background = '#fff';
+                    card.innerHTML = `
+                        <p><strong>Cédula:</strong> ${familiar.id_familiar}</p>
+                        <p><strong>Nombre:</strong> ${familiar.nombre1} ${familiar.nombre2}</p>
+                        <p><strong>Apellido:</strong> ${familiar.apellido1} ${familiar.apellido2}</p>
+                        <p><strong>Correo:</strong> ${familiar.correo || '-'}</p>
+                        <p><strong>Teléfono:</strong> ${familiar.telefono || '-'}</p>
+                        <p><strong>Parentesco:</strong> ${familiar.parentesco}</p>
+                        <p><strong>Ocupación:</strong> ${familiar.ocupacion}</p>
+                        <p><strong>Dirección:</strong> ${familiar.pais}, ${familiar.estado}, ${familiar.ciudad}</p>
+                    `;
+                    familyMembersDiv.appendChild(card);
 
                     const formDiv = document.createElement('div');
                     formDiv.id = 'update-family-form';
@@ -152,7 +179,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                     campoSelect.addEventListener('change', renderInput);
                     renderInput();
 
-                    formDiv.querySelector('#cancelar-update-familiar').onclick = () => formDiv.remove();
+                    formDiv.querySelector('#cancelar-update-familiar').onclick = async () => {
+                        await renderFamiliares(id_usuario);
+                    };
 
                     formDiv.querySelector('#guardar-update-familiar').onclick = async () => {
                         const campo = campoSelect.value;

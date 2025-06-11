@@ -1,9 +1,8 @@
 export async function configurarBotonAgregarFamiliar(addFamBtn, familyMembersDiv, id_usuario, renderFamiliares) {
   addFamBtn.onclick = async function () {
-    
-    if (document.getElementById("formulario-agregar-familiar")) {
-      return;
-    }
+    if (document.getElementById("formulario-agregar-familiar")) return;
+
+    familyMembersDiv.style.display = 'none';
 
     try {
       const [planDataRes, familiaresRes, parentescosRes] = await Promise.all([
@@ -100,9 +99,13 @@ export async function configurarBotonAgregarFamiliar(addFamBtn, familyMembersDiv
       formContainer.id = "formulario-agregar-familiar";
       formContainer.style.marginTop = "20px";
       formContainer.appendChild(form);
-      familyMembersDiv.appendChild(formContainer);
+      // Muestra el formulario
+      familyMembersDiv.parentNode.insertBefore(formContainer, familyMembersDiv);
 
-      form.querySelector('#cancelar-agregar-familiar').onclick = () => formContainer.remove();
+      form.querySelector('#cancelar-agregar-familiar').onclick = () => {
+        formContainer.remove();
+        familyMembersDiv.style.display = '';
+      };
 
       form.onsubmit = async (e) => {
         e.preventDefault();
@@ -154,12 +157,14 @@ export async function configurarBotonAgregarFamiliar(addFamBtn, familyMembersDiv
           alert("Familiar agregado con éxito.");
           formContainer.remove();
           await renderFamiliares(id_usuario);
+          familyMembersDiv.style.display = '';
         } else {
           alert("Error al agregar el familiar.");
         }
       };
     } catch (error) {
       alert('Error inesperado: ' + error.message);
+      familyMembersDiv.style.display = '';
     }
   }
 }
