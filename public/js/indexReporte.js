@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const familyMembers = getFamilyMembers();
     const historialData = getHistorial();
 
-    reporteButton.addEventListener('click', function() {
+    reporteButton.addEventListener('click', async function() {
         reporte.innerHTML = '';
 
         if (personalContainer) personalContainer.style.display = 'none';
@@ -81,7 +81,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (pagosContainer) pagosContainer.style.display = 'none';
         reporte.style.display = 'block';
 
-        
         const volverBtn = document.createElement('button');
         volverBtn.textContent = 'Volver';
         volverBtn.style.marginBottom = '20px';
@@ -91,12 +90,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         };
         reporte.appendChild(volverBtn);
 
-        
         const reporteDiv = document.createElement('div');
         reporteDiv.id = 'reporteData';
         reporteDiv.className = 'reporte-data';
 
-        
         const fechaActual = new Date().toLocaleDateString();
         const headerDiv = document.createElement('div');
         headerDiv.style.textAlign = 'center';
@@ -109,69 +106,68 @@ document.addEventListener('DOMContentLoaded', async function() {
         `;
         reporteDiv.appendChild(headerDiv);
 
-        
-        personalData.then(data => {
-            if (data && data.userInfo) {
-                const info = data.userInfo;
-                reporteDiv.innerHTML += `
-                    <h2>Datos Personales</h2>
-                    <p>Nombres: ${info.nombre1} ${info.nombre2}</p>
-                    <p>Apellidos: ${info.apellido1} ${info.apellido2}</p>
-                    <p>Email: ${info.correo}</p>
-                    <p>Teléfono: ${info.telefono}</p>
-                    <p>Fecha de Nacimiento: ${info.fecha_nacimiento}</p>
-                    <p>Ocupación: ${info.ocupacion}</p>
-                    <p>Dirección: ${info.pais}, ${info.estado}, ${info.ciudad}</p>
-                    <p>Plan: Capacidad ${info.capacidad_total}, No Directos ${info.max_no_directos}, Precio $${info.precio_mensual}</p>
+        // Trae los datos actualizados cada vez
+        const personalData = await getPersonalData();
+        const familyMembers = await getFamilyMembers();
+        const historialData = await getHistorial();
+
+        // Datos personales
+        if (personalData && personalData.userInfo) {
+            const info = personalData.userInfo;
+            reporteDiv.innerHTML += `
+                <h2>Datos Personales</h2>
+                <p>Nombres: ${info.nombre1} ${info.nombre2}</p>
+                <p>Apellidos: ${info.apellido1} ${info.apellido2}</p>
+                <p>Email: ${info.correo}</p>
+                <p>Teléfono: ${info.telefono}</p>
+                <p>Fecha de Nacimiento: ${info.fecha_nacimiento}</p>
+                <p>Ocupación: ${info.ocupacion}</p>
+                <p>Dirección: ${info.pais}, ${info.estado}, ${info.ciudad}</p>
+                <p>Plan: Capacidad ${info.capacidad_total}, No Directos ${info.max_no_directos}, Precio $${info.precio_mensual}</p>
+            `;
+        } else {
+            reporteDiv.innerHTML += '<p>No se encontraron datos personales</p>';
+        }
+
+        // Familiares
+        if (familyMembers && familyMembers.familyMembers) {
+            const familyDiv = document.createElement('div');
+            familyDiv.id = 'familyMembersData';
+            familyDiv.className = 'family-members-data';
+            familyDiv.innerHTML = '<h2>Familiares</h2>';
+            familyMembers.familyMembers.forEach(member => {
+                familyDiv.innerHTML += `
+                    <p>${member.nombre1} ${member.apellido1} - ${member.parentesco}</p>
                 `;
-            } else {
-                reporteDiv.innerHTML += '<p>No se encontraron datos personales</p>';
-            }
-        });
+            });
+            reporteDiv.appendChild(familyDiv);
+        } else {
+            reporteDiv.innerHTML += '<p>No se encontraron familiares</p>';
+        }
 
-        
-        familyMembers.then(data => {
-            if (data && data.familyMembers) {
-                const familyDiv = document.createElement('div');
-                familyDiv.id = 'familyMembersData';
-                familyDiv.className = 'family-members-data';
-                familyDiv.innerHTML = '<h2>Familiares</h2>';
-                data.familyMembers.forEach(member => {
-                    familyDiv.innerHTML += `
-                        <p>${member.nombre1} ${member.apellido1} - ${member.parentesco}</p>
-                    `;
-                });
-                reporteDiv.appendChild(familyDiv);
-            } else {
-                reporteDiv.innerHTML += '<p>No se encontraron familiares</p>';
-            }
-        });
-
-        
-        historialData.then(data => {
-            if (data && Array.isArray(data.paymentHistory) && data.paymentHistory.length > 0) {
-                const historialDiv = document.createElement('div');
-                historialDiv.id = 'historialData';
-                historialDiv.className = 'historial-data';
-                historialDiv.innerHTML = '<h2>Historial de Pagos</h2>';
-                data.paymentHistory.forEach(pago => {
-                    historialDiv.innerHTML += `
-                        <div class="pago-item">
-                            <strong>Periodo:</strong> ${pago.periodo || '-'}<br>
-                            <strong>Descripción:</strong> ${pago.descripcion || '-'}<br>
-                            ${pago.estado === "pagado" ? `<strong>Fecha:</strong> ${pago.fecha}<br>` : ""}
-                            <strong>Monto:</strong> $${pago.monto}<br>
-                            <strong>Estado:</strong> ${pago.estado}
-                            <br>
-                        </div>
-                        <hr>
-                    `;
-                });
-                reporteDiv.appendChild(historialDiv);
-            } else {
-                reporteDiv.innerHTML += '<p>No se encontró historial de pagos</p>';
-            }
-        });
+        // Historial de pagos
+        if (historialData && Array.isArray(historialData.paymentHistory) && historialData.paymentHistory.length > 0) {
+            const historialDiv = document.createElement('div');
+            historialDiv.id = 'historialData';
+            historialDiv.className = 'historial-data';
+            historialDiv.innerHTML = '<h2>Historial de Pagos</h2>';
+            historialData.paymentHistory.forEach(pago => {
+                historialDiv.innerHTML += `
+                    <div class="pago-item">
+                        <strong>Periodo:</strong> ${pago.periodo || '-'}<br>
+                        <strong>Descripción:</strong> ${pago.descripcion || '-'}<br>
+                        ${pago.estado === "pagado" ? `<strong>Fecha:</strong> ${pago.fecha}<br>` : ""}
+                        <strong>Monto:</strong> $${pago.monto}<br>
+                        <strong>Estado:</strong> ${pago.estado}
+                        <br>
+                    </div>
+                    <hr>
+                `;
+            });
+            reporteDiv.appendChild(historialDiv);
+        } else {
+            reporteDiv.innerHTML += '<p>No se encontró historial de pagos</p>';
+        }
 
         reporte.appendChild(reporteDiv);
     });

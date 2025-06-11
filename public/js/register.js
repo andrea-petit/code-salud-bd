@@ -277,13 +277,15 @@ function crearFormularioFamiliar(
             alert(`Solo puedes agregar ${planCapacidadTotal} familiares en total.`);
             return;
         }
-        if (familiaresActuales.some(f => f.id_familiar === familyMemberData.id_familiar)) {
+        const id_familiar_nuevo = formData.get('id_familiar') || "";
+
+        if (familiaresActuales.some(f => f.id_familiar === id_familiar_nuevo)) {
             alert('Ya agregaste un familiar con esta cédula.');
             return;
         }
 
         const familyMemberData = {
-            id_familiar: formData.get('id_familiar') || "",
+            id_familiar: id_familiar_nuevo,
             nombre1: formData.get('nombre1') || "",
             nombre2: formData.get('nombre2') || "",
             apellido1: formData.get('apellido1') || "",

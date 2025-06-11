@@ -428,7 +428,7 @@ const userModel = {
                     .catch(err => reject(err));
                 return;    
             }
-            if (campo === 'id_ocupacion') {
+            if (campo === 'ocupacion') {
                 
                 getOcupacionIdByNombre(valor)
                     .then(id_ocupacion => {
@@ -535,7 +535,7 @@ const userModel = {
     },
     getPaymentHistory: (id_usuario) => {
         return new Promise((resolve, reject) => {
-            const sql = `SELECT * FROM pagos WHERE id_usuario = ? ORDER BY fecha DESC`;
+            const sql = `SELECT * FROM pagos WHERE id_usuario = ?`;
             db.all(sql, [id_usuario], (err, rows) => {
                 if (err) return reject(err);
                 resolve(rows);
