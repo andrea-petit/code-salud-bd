@@ -1,4 +1,8 @@
-document.addEventListener('DOMContentLoaded', function() {
+import { configurarBotonAgregarFamiliar } from './agregarFamiliar.js';
+
+
+
+document.addEventListener('DOMContentLoaded', async function() {
 
     const personalContainer = document.getElementById('personal-container');
     const actualizarDatosContainer = document.getElementById('actualizar-datos-personales');
@@ -7,7 +11,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const reporte = document.getElementById('reporte');
     const verFamiliaresButton = document.getElementById('familia-button');
 
-    let id_usuario = window.id_usuario || null;
+    async function getIdUsuario() {
+        try {
+            const response = await fetch('/api/users/userInfo');
+            if (!response.ok) throw new Error('No se pudo obtener userInfo');
+            const data = await response.json();
+            if (data && data.userInfo && data.userInfo.id_usuario) {
+                window.id_usuario = data.userInfo.id_usuario;
+            }
+        } catch (error) {
+            console.error('Error obteniendo id_usuario:', error);
+        }
+    }
+
+    
+    await getIdUsuario();
 
     const familyMembersDiv = document.getElementById('family-members');
 
@@ -26,8 +44,10 @@ document.addEventListener('DOMContentLoaded', function() {
         familyMembersDiv.appendChild(volverBtn);
 
         const addFamBtn = document.createElement('button');
+        
         addFamBtn.textContent = 'Añadir familiar';
         addFamBtn.style.margin = '0 0 20px 10px';
+        configurarBotonAgregarFamiliar(addFamBtn, familyMembersDiv, id_usuario, renderFamiliares);
         familyMembersDiv.appendChild(addFamBtn);
 
         const response = await fetch(`/api/users/familyMembers/${id_usuario}`);

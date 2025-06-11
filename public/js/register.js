@@ -246,6 +246,8 @@ function crearFormularioFamiliar(
     familyForm.appendChild(finalizarBtn);
 
     finalizarBtn.addEventListener('click', function() {
+        let seguro= confirm('¿Estás seguro de que deseas finalizar el registro de familiares?');
+        if (!seguro) return;
         alert('Registro de familiares finalizado.');
         window.location.href = '/login';
     });
@@ -273,6 +275,10 @@ function crearFormularioFamiliar(
         }
         if (familiaresActuales.length >= planCapacidadTotal) {
             alert(`Solo puedes agregar ${planCapacidadTotal} familiares en total.`);
+            return;
+        }
+        if (familiaresActuales.some(f => f.id_familiar === familyMemberData.id_familiar)) {
+            alert('Ya agregaste un familiar con esta cédula.');
             return;
         }
 
@@ -310,15 +316,15 @@ function crearFormularioFamiliar(
             if (familiaresActuales.length < planCapacidadTotal) {
                 crearFormularioFamiliar(planNoDirectos, planCapacidadTotal, allData, familiaresActuales);
             } else {
-                familyForm.innerHTML = '<p>Ya alcanzaste el máximo de familiares permitidos por tu plan.</p>';
-                const finalizarBtn = document.createElement('button');
-                finalizarBtn.textContent = 'Finalizar';
-                finalizarBtn.type = 'button';
-                finalizarBtn.className = 'finalizar-familiares';
-                finalizarBtn.addEventListener('click', function() {
+                familyForm.innerHTML = `
+                <p>Ya alcanzaste el máximo de familiares permitidos por tu plan.</p>
+                <button type="button" class="finalizar-familiares">Finalizar</button>
+                `;
+                document.querySelector('.finalizar-familiares').addEventListener('click', function() {
                     alert('Registro de familiares finalizado.');
                     window.location.href = '/login';
                 });
+
             }
         })
         .catch(err => {
