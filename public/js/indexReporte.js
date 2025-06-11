@@ -67,7 +67,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-    // Ahora sí, llama a las funciones que dependen de window.id_usuario
     const personalData = getPersonalData();
     const familyMembers = getFamilyMembers();
     const historialData = getHistorial();
@@ -101,12 +100,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         reporteDiv.appendChild(headerDiv);
         reporteDiv.innerHTML += `<hr style="margin: 10px 0;">`;
 
-        // Trae los datos actualizados cada vez
         const personalData = await getPersonalData();
         const familyMembers = await getFamilyMembers();
         const historialData = await getHistorial();
 
-        // Datos personales
         if (personalData && personalData.userInfo) {
             const info = personalData.userInfo;
             reporteDiv.innerHTML += `
@@ -124,7 +121,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             reporteDiv.innerHTML += '<p>No se encontraron datos personales</p>';
         }
 
-        // Familiares
+
         if (familyMembers && familyMembers.familyMembers) {
             const familyDiv = document.createElement('div');
             familyDiv.id = 'familyMembersData';
@@ -140,7 +137,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             reporteDiv.innerHTML += '<p>No se encontraron familiares</p>';
         }
 
-        // Historial de pagos
+
         if (historialData && Array.isArray(historialData.paymentHistory) && historialData.paymentHistory.length > 0) {
             const historialDiv = document.createElement('div');
             historialDiv.id = 'historialData';
