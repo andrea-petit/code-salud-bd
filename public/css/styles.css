@@ -30,7 +30,8 @@ header.bar {
 }
 
 .bar-logo img {
-    width: 5rem;
+    margin-top: 8px;
+    width: 5.2rem;
     height: auto;
 }
 
@@ -48,7 +49,7 @@ header.bar {
 
 .nav-menu {
     display: flex;
-    gap: .1rem;
+    gap: .5rem;
 }
 
 .nav-menu button {
@@ -98,8 +99,12 @@ body {
     margin-bottom: 2rem;
 }
 
+#personal-container h2 {
+    color: #4e54c8;
+}
+
 #personal-container hr{
-    margin: 20px 0 20px 0;
+    margin: 20px 0 25px 0;
 }
 
 
@@ -108,7 +113,7 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 60vh;
+    min-height: 40vh;
     width: 100%;
     margin: 0 auto;
     padding: 40px 30px;
@@ -125,6 +130,7 @@ body {
 #actualizar-datos-personales #act-datos-per {
     font-size: 30px;
     text-align: center;
+    color: #4e54c8;
 }
 
 #actualizar-datos-personales hr {
@@ -182,7 +188,7 @@ body {
     font-size: 1.08rem;
     font-weight: 700;
     cursor: pointer;
-    margin-top: 8rem;
+    margin-top: 3rem;
     margin-right: 0.5rem;
     margin-left: 0;
     width: auto;
@@ -216,6 +222,203 @@ body {
     margin-bottom: 2rem;
 }
 
+
+#ver-familiares button {
+    color: #fff;
+    background: linear-gradient(90deg, #4e54c8, #8f94fb);
+    padding: 0.8rem 2.2rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: .5rem;
+    margin-left: 0;
+    width: auto;
+    min-width: 120px;
+    box-shadow: 0 2px 8px rgba(44,49,122,0.07);
+    transition: background 0.18s, transform 0.12s;
+}
+
+#ver-familiares button:hover{
+    background: linear-gradient(90deg, #5DB640, #b1ff97);
+    transform: translateY(-2px) scale(1.03);
+}
+
+#ver-familiares button.update-family-member {
+    color: #000000;
+    background: transparent;
+    padding: 0.2rem 1.2rem;
+    border: solid #8f94fb;
+    border-radius: 10px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: .5rem;
+    margin-left: 0;
+    width: auto;
+    min-width: 120px;
+    box-shadow: 0 2px 8px rgba(44,49,122,0.07);
+    transition: background 0.18s, transform 0.12s;
+}
+
+
+#ver-familiares button.delete-family-member {
+    color: #000000;
+    background: transparent;
+    padding: 0.2rem 1.2rem;
+    border: solid #c84e54;
+    border-radius: 10px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: .5rem;
+    margin-left: 0;
+    width: auto;
+    min-width: 120px;
+    box-shadow: 0 2px 8px rgba(44,49,122,0.07);
+    transition: background 0.18s, transform 0.12s;
+}
+
+#ver-familiares button.delete-family-member:hover,
+#ver-familiares button.delete-family-member:focus {
+    border: solid #a12d3a;
+    transform: translateY(-2px) scale(1.03);
+}
+
+#ver-familiares button.update-family-member:hover,
+#ver-familiares button.update-family-member:focus  {
+    border: solid #4e54c8;
+    transform: translateY(-2px) scale(1.03);
+}
+
+#hr-update{
+    margin: 10px 0 10px 0;
+}
+
+
+#update-family-form select,
+#update-family-form input,
+#update-family-form textarea {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid #bfc3e6;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    background: #f7f8fa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    box-sizing: border-box;
+}
+
+#update-family-form select:focus,
+#update-family-form input:focus,
+#update-family-form textarea:focus {
+    border-color: #2d317a;
+    box-shadow: 0 0 0 2px #b1b5f7;
+}
+
+#formulario-agregar-familiar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border: 2px solid #2d317a;
+    border-radius: 18px;
+    box-shadow: 0 0 16px 4px rgba(44, 49, 122, 0.08);
+    padding: 40px 30px;
+    max-width: 500px;
+    margin: 0 auto 2rem auto;
+    font-size: 18px;
+    gap: 1.2rem;
+}
+
+#formulario-agregar-familiar h3 {
+    color: #4e54c8;
+    margin-bottom: 1rem;
+    font-size: 30px;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+#formulario-agregar-familiar input,
+#formulario-agregar-familiar select {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid #bfc3e6;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    background: #f7f8fa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    box-sizing: border-box;
+}
+
+#formulario-agregar-familiar input:focus,
+#formulario-agregar-familiar select:focus {
+    border-color: #2d317a;
+    box-shadow: 0 0 0 2px #b1b5f7;
+}
+
+#formulario-agregar-familiar button[type="submit"] {
+    color: #fff;
+    background: linear-gradient(90deg, #4e54c8, #8f94fb);
+    padding: 0.7rem 2.2rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1rem;
+    margin-right: 0.5rem;
+    width: auto;
+    min-width: 120px;
+    box-shadow: 0 2px 8px rgba(44,49,122,0.07);
+    transition: background 0.18s, transform 0.12s;
+}
+
+#formulario-agregar-familiar button[type="submit"]:hover,
+#formulario-agregar-familiar button[type="submit"]:focus {
+    background: linear-gradient(90deg, #5DB640, #b1ff97);
+    color: #222;
+    transform: translateY(-2px) scale(1.03);
+}
+
+#formulario-agregar-familiar button#cancelar-agregar-familiar {
+    color: #fff;
+    background: #c84e54;
+    padding: 0.7rem 2.2rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 1rem;
+    margin-left: 0.5rem;
+    width: auto;
+    min-width: 120px;
+    box-shadow: 0 2px 8px rgba(44,49,122,0.07);
+    transition: background 0.18s, transform 0.12s;
+}
+
+#formulario-agregar-familiar button#cancelar-agregar-familiar:hover,
+#formulario-agregar-familiar button#cancelar-agregar-familiar:focus {
+    background: #a12d3a;
+    color: #fff;
+    transform: translateY(-2px) scale(1.03);
+}
+
+#container-pay {
+    font-size: 1.5rem;
+    padding: 20px;
+    border: solid 2px #2d317a;
+    border-radius: 10px;
+}
+
 #pagos-container{
     display: flex;
     flex-direction: column;
@@ -225,14 +428,47 @@ body {
     min-height: 60vh;
     width: 100%;
     margin: 0 auto;
-    padding: 40px;
-    font-size: 20px;
+    padding: 40px 30px;
+    font-size: 18px;
     background: #fff;
     border: solid 2px #2d317a;
     border-radius: 16px;
     box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.07);
-    max-width: 600px;
+    max-width: 500px;
     margin-bottom: 2rem;
+    gap: 1.2rem;
+}
+
+.pagos-btns {
+    display: flex;
+    justify-content: flex-start;
+    margin-right: 0.5rem;
+    width: 100%;
+}
+
+.pagos-btns button {
+    margin: 0;
+}
+
+#payment-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 2rem;
+}
+
+#payment-form input,
+#payment-form select,
+#payment-form textarea {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1.5px solid #bfc3e6;
+    border-radius: 8px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    background: #f7f8fa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    box-sizing: border-box;
 }
 
 #pagos-container button {
@@ -244,13 +480,17 @@ body {
     font-size: 1.08rem;
     font-weight: 700;
     cursor: pointer;
-    margin-top: 8rem;
+    margin-top: 1rem;
     margin-right: 0.5rem;
     margin-left: 0;
     width: auto;
     min-width: 120px;
     box-shadow: 0 2px 8px rgba(44,49,122,0.07);
     transition: background 0.18s, transform 0.12s;
+}
+
+#volver-btn {
+    background-color: #000000;
 }
 
 #pagos-container button:hover,
@@ -275,6 +515,103 @@ footer {
     text-align: center;
 }
 
+#reporte {
+    max-width: 700px;
+    margin: 2rem auto;
+    background: #fff;
+    border: 2px solid #2d317a;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(44,49,122,0.10);
+    padding: 2.5rem 3rem 2rem 3rem;
+    font-family: 'Poppins', sans-serif;
+    color: #222;
+}
+
+.reporte-data {
+    width: 100%;
+}
+
+#reporte h2 {
+    color: #4e54c8;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#reporte p {
+    margin: 0.2rem 0 0.2rem 0;
+    font-size: 1rem;
+}
+
+#reporte hr {
+    border: none;
+    border-top: 1.5px solid #bfc3e6;
+    margin: 1rem 0;
+}
+
+.family-members-data, .historial-data {
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
+}
+
+.pago-item {
+    background: #f7f8fa;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.7rem;
+    border-left: 4px solid #4e54c8;
+    box-shadow: 0 1px 4px rgba(44,49,122,0.06);
+}
+
+.pago-item strong {
+    color: #2d317a;
+}
+
+#reporte button {
+    background: #4e54c8;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.12s;
+    box-shadow: 0 2px 8px rgba(44,49,122,0.07);
+}
+
+#reporte button:hover {
+    background: #2d317a;
+    transform: translateY(-2px) scale(1.03);
+}
+
+#reporte-header {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+#reporte-header img {
+    max-width: 70px;
+    height: auto;
+    display: block;
+    margin: 0;
+}
+
+#reporte-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #4e54c8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: left;
+}
+
+
 @media (max-width: 600px) {
     header.bar {
         flex-direction: column;
@@ -297,6 +634,23 @@ footer {
         max-width: 98vw;
     }
     #actualizar-datos-personales button {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    #reporte {
+        padding: 1rem 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    #formulario-agregar-familiar {
+        padding: 18px 5vw;
+        font-size: 16px;
+        max-width: 98vw;
+        gap: 0.7rem;
+    }
+    #formulario-agregar-familiar button {
         width: 100%;
         margin-right: 0;
         margin-bottom: 0.5rem;

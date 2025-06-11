@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -54,11 +54,12 @@
                 <option value="paypal">PayPal</option>
             </select>
             <input type="number" name="cardNumber" placeholder="Número de Tarjeta" min="0" minlength="13" maxlength="19" required>
-            <button id="submit-payment" type="button">Pagar</button>
+            <div class="pagos-btns">
+                <button type="button" id="submit-payment">Pagar</button>
+            </div>
         </form>
     </div>
     <div id="reporte" style="display: none;">
-        <h1>Historial</h1>
     </div>
 
     <footer class="footer-copy">

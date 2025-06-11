@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (data && data.paymentPendiente && data.paymentPendiente.estado === 'pendiente') {
                 const pago = data.paymentPendiente;
                 infoDiv.innerHTML = `
-                    <div>
+                    <div id="container-pay">
                         <strong>Periodo:</strong> ${pago.periodo || '-'}<br>
                         <strong>Monto:</strong> $${pago.monto}<br>
                         <strong>Estado:</strong> ${pago.estado}
@@ -57,11 +57,21 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
+    const pagosBtns = document.createElement('div');
+    pagosBtns.className = 'pagos-btns';
+
     const volverBtn = document.createElement('button');
     volverBtn.textContent = 'Volver';
     volverBtn.type = 'button';
     volverBtn.id = 'volver-btn';
-    volverBtn.style.marginTop = '20px';
+
+    const pagarBtn = document.getElementById('submit-payment');
+    pagosBtns.appendChild(volverBtn);
+    pagosBtns.appendChild(pagarBtn);
+
+    const paymentForm = document.getElementById('payment-form');
+    paymentForm.appendChild(pagosBtns);
+
     volverBtn.addEventListener('click', function() {
         actualizarDatosContainer.style.display = 'none';
         verFamiliaresContainer.style.display = 'none';
@@ -69,7 +79,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         reporte.style.display = 'none';
         personalContainer.style.display = 'block';
     });
-    document.getElementById('payment-form').after(volverBtn);
 
     await mostrarPagoPendiente();
 

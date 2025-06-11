@@ -81,14 +81,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (pagosContainer) pagosContainer.style.display = 'none';
         reporte.style.display = 'block';
 
-        const volverBtn = document.createElement('button');
-        volverBtn.textContent = 'Volver';
-        volverBtn.style.marginBottom = '20px';
-        volverBtn.onclick = function() {
-            reporte.style.display = 'none';
-            if (personalContainer) personalContainer.style.display = 'block';
-        };
-        reporte.appendChild(volverBtn);
+        
 
         const reporteDiv = document.createElement('div');
         reporteDiv.id = 'reporteData';
@@ -96,15 +89,17 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         const fechaActual = new Date().toLocaleDateString();
         const headerDiv = document.createElement('div');
-        headerDiv.style.textAlign = 'center';
-        headerDiv.style.marginBottom = '20px';
+        headerDiv.id = 'reporte-header';
         headerDiv.innerHTML = `
-            <h2>CODE-SALUD</h2>
-            <p>RIF J-3082850-7</p>
-            <p>Fecha de emisión: ${fechaActual}</p>
-            <hr style="margin: 10px 0;">
+            <img src="/img/logo4.png" alt="logo">
+            <div>
+                <h2>CODE-SALUD</h2>
+                <p>RIF J-3082850-7</p>
+                <p>Fecha de emisión: ${fechaActual}</p>
+            </div>
         `;
         reporteDiv.appendChild(headerDiv);
+        reporteDiv.innerHTML += `<hr style="margin: 10px 0;">`;
 
         // Trae los datos actualizados cada vez
         const personalData = await getPersonalData();
@@ -170,7 +165,16 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         reporte.appendChild(reporteDiv);
+        const volverBtn = document.createElement('button');
+        volverBtn.textContent = 'Volver';
+        volverBtn.style.marginBottom = '20px';
+        volverBtn.onclick = function() {
+            reporte.style.display = 'none';
+            if (personalContainer) personalContainer.style.display = 'block';
+        };
+        reporte.appendChild(volverBtn);
     });
+        
 
 
 });

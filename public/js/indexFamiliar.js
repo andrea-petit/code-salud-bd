@@ -38,21 +38,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             familyMembersDiv.removeChild(familyMembersDiv.firstChild);
         }
 
-        const volverBtn = document.createElement('button');
-        volverBtn.textContent = 'Volver';
-        volverBtn.style.marginBottom = '20px';
-        volverBtn.onclick = function() {
-            verFamiliaresContainer.style.display = 'none';
-            personalContainer.style.display = 'block';
-        };
-        familyMembersDiv.appendChild(volverBtn);
-
-        const addFamBtn = document.createElement('button');
-        
-        addFamBtn.textContent = 'Añadir familiar';
-        addFamBtn.style.margin = '0 0 20px 10px';
-        configurarBotonAgregarFamiliar(addFamBtn, familyMembersDiv, id_usuario, renderFamiliares);
-        familyMembersDiv.appendChild(addFamBtn);
 
         const response = await fetch(`/api/users/familyMembers/${id_usuario}`);
         const data = await response.json();
@@ -84,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 `;
                 familyMembersDiv.appendChild(card);
             });
-        const volverBtn = document.createElement('button');
+                const volverBtn = document.createElement('button');
         volverBtn.textContent = 'Volver';
         volverBtn.style.marginBottom = '20px';
         volverBtn.onclick = function() {
@@ -94,9 +79,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         familyMembersDiv.appendChild(volverBtn);
 
         const addFamBtn = document.createElement('button');
+        
         addFamBtn.textContent = 'Añadir familiar';
         addFamBtn.style.margin = '0 0 20px 10px';
+        configurarBotonAgregarFamiliar(addFamBtn, familyMembersDiv, id_usuario, renderFamiliares);
         familyMembersDiv.appendChild(addFamBtn);
+
             
             const updateButtons = document.querySelectorAll('.update-family-member');
             updateButtons.forEach(button => {
@@ -118,6 +106,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     card.style.boxShadow = '0 2px 8px rgba(0,0,0,0.07)';
                     card.style.background = '#fff';
                     card.innerHTML = `
+                        <h3>Actualizar Familiar</h3><hr id="hr-update">
                         <p><strong>Cédula:</strong> ${familiar.id_familiar}</p>
                         <p><strong>Nombre:</strong> ${familiar.nombre1} ${familiar.nombre2}</p>
                         <p><strong>Apellido:</strong> ${familiar.apellido1} ${familiar.apellido2}</p>
@@ -132,7 +121,6 @@ document.addEventListener('DOMContentLoaded', async function() {
                     const formDiv = document.createElement('div');
                     formDiv.id = 'update-family-form';
                     formDiv.innerHTML = `
-                        <h3>Actualizar Familiar</h3>
                         <select id="campo-familiar">
                             <option value="nombre1">Primer nombre</option>
                             <option value="nombre2">Segundo nombre</option>
