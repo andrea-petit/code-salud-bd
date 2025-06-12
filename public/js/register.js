@@ -246,6 +246,10 @@ function crearFormularioFamiliar(
     familyForm.appendChild(finalizarBtn);
 
     finalizarBtn.addEventListener('click', function() {
+        if(familiaresActuales.length === 0){
+            alert('Por favor registre al menos 1 familiar');
+            return;
+        }
         let seguro= confirm('¿Estás seguro de que deseas finalizar el registro de familiares?');
         if (!seguro) return;
         alert('Registro de familiares finalizado.');
