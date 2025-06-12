@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,800;1,800&display=swap');
 
 body.register-bg {
-    background: linear-gradient(#4e54c8 0, #5DB640);
+    background: radial-gradient(ellipse, #5DB640, #4e54c8 90%)
 }
 
 body {

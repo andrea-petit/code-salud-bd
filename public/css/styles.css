@@ -31,7 +31,7 @@ header.bar {
 
 .bar-logo img {
     margin-top: 8px;
-    width: 5.2rem;
+    width: 5rem;
     height: auto;
 }
 
@@ -73,7 +73,7 @@ header.bar {
 
 body {
     font-family: "Poppins", sans-serif;
-    background-image: url("/img/fondo7.png");
+    background: linear-gradient(#4e54c8, #5DB640, #4e54c8);
     min-height: 100vh;
     padding-top: 90px;
     display: flex;
@@ -605,7 +605,7 @@ footer {
 #reporte-header h2 {
     margin: 0;
     font-size: 1.5rem;
-    color: #4e54c8;
+    color: #000000;
     text-transform: uppercase;
     letter-spacing: 1px;
     text-align: left;

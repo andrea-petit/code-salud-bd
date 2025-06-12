@@ -92,7 +92,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         headerDiv.innerHTML = `
             <img src="/img/logo4.png" alt="logo">
             <div>
-                <h2>CODE-SALUD</h2>
+                <h2>
+                <span style="color: #5DB640;">CODE</span>
+                <span>-</span>
+                <span style="color: #195ba7;">SALUD</span>
+                </h2>
                 <p>RIF J-3082850-7</p>
                 <p>Fecha de emisión: ${fechaActual}</p>
             </div>
@@ -108,14 +112,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             const info = personalData.userInfo;
             reporteDiv.innerHTML += `
                 <h2>Datos Personales</h2>
-                <p>Nombres: ${info.nombre1} ${info.nombre2}</p>
-                <p>Apellidos: ${info.apellido1} ${info.apellido2}</p>
-                <p>Email: ${info.correo}</p>
-                <p>Teléfono: ${info.telefono}</p>
-                <p>Fecha de Nacimiento: ${info.fecha_nacimiento}</p>
-                <p>Ocupación: ${info.ocupacion}</p>
-                <p>Dirección: ${info.pais}, ${info.estado}, ${info.ciudad}</p>
-                <p>Plan: Capacidad ${info.capacidad_total}, No Directos ${info.max_no_directos}, Precio $${info.precio_mensual}</p>
+                <p><strong>Nombres:</strong> ${info.nombre1} ${info.nombre2}</p>
+                <p><strong>Apellidos:</strong> ${info.apellido1} ${info.apellido2}</p>
+                <p><strong>Email:</strong> ${info.correo}</p>
+                <p><strong>Teléfono:</strong> ${info.telefono}</p>
+                <p><strong>Fecha de Nacimiento:</strong> ${info.fecha_nacimiento}</p>
+                <p><strong>Ocupación:</strong> ${info.ocupacion}</p>
+                <p><strong>Dirección:</strong> ${info.pais}, ${info.estado}, ${info.ciudad}</p>
+                <p><strong>Plan:</strong> Capacidad ${info.capacidad_total}, No Directos ${info.max_no_directos}, Precio $${info.precio_mensual}</p>
             `;
         } else {
             reporteDiv.innerHTML += '<p>No se encontraron datos personales</p>';
